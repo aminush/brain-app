@@ -1,0 +1,64 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(3, 5, 12, 0.78);
+  z-index: 10;
+}
+
+.rescue-modal,
+.result-modal {
+  max-width: 680px;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+.timer {
+  margin: 14px 0;
+  color: #38bdf8;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.drawing-canvas {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  touch-action: none;
+}
+
+.result-modal { text-align: center; }
+
+.loader-ring {
+  width: 58px;
+  height: 58px;
+  margin: 10px auto 18px;
+  border: 4px solid rgba(99, 102, 241, 0.22);
+  border-top-color: #38bdf8;
+  border-radius: 999px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

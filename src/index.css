@@ -61,11 +61,17 @@ button {
   padding: 12px 18px;
   border: none;
   border-radius: 12px;
-  background: var(--clay);
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.34);
   color: #fff;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+button:hover {
+  box-shadow: 0 14px 30px rgba(168, 85, 247, 0.42);
+  transform: translateY(-1px);
 }
 button:disabled { opacity: 0.6; cursor: default; }
 
