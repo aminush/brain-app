@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
+import { AuthPanel, type AuthMode } from '../components/neuro/AuthPanel';
 import { BottomTabs } from '../components/neuro/BottomTabs';
 import { Dashboard } from '../components/neuro/Dashboard';
 import { JournalModal } from '../components/neuro/JournalModal';
-import { Onboarding } from '../components/neuro/Onboarding';
+import { Onboarding, type Language } from '../components/neuro/Onboarding';
 import { RescueModal } from '../components/neuro/RescueModal';
 import { ResultModal } from '../components/neuro/ResultModal';
 import type { AnalysisResult, Goal, Tab } from '../components/neuro/types';
@@ -10,6 +11,8 @@ import '../styles/neuro.css';
 
 export function HomePage() {
   const [onboardingStep, setOnboardingStep] = useState(1);
+  const [authMode, setAuthMode] = useState<AuthMode | null>(null);
+  const [language, setLanguage] = useState<Language>('eng');
   const [isReady, setIsReady] = useState(false);
   const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
   const [selectedGoal, setSelectedGoal] = useState<Goal>('Фокус');
@@ -54,10 +57,23 @@ export function HomePage() {
   };
 
   if (!isReady) {
+    if (authMode) {
+      return (
+        <AuthPanel
+          mode={authMode}
+          onBack={() => setAuthMode(null)}
+          onSuccess={() => setIsReady(true)}
+        />
+      );
+    }
+
     return (
       <Onboarding
+        language={language}
+        onChangeLanguage={setLanguage}
         onFinish={() => setIsReady(true)}
         onNext={() => setOnboardingStep((step) => Math.min(3, step + 1))}
+        onOpenAuth={setAuthMode}
         onSelectGoal={setSelectedGoal}
         onToggleProblem={toggleProblem}
         selectedGoal={selectedGoal}

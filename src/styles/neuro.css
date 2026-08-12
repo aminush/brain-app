@@ -1,3 +1,6 @@
 @import './neuro-base.css';
+@import './neuro-auth.css';
+@import './neuro-landing.css';
+@import './neuro-face.css';
 @import './neuro-dashboard.css';
 @import './neuro-modals.css';
