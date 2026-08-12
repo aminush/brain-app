@@ -13,8 +13,10 @@
   border: 1px solid rgba(99, 102, 241, 0.34);
   border-radius: 34px;
   background:
-    radial-gradient(circle at 68% 48%, rgba(99, 102, 241, 0.28), transparent 34%),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.78) 0 47%, rgba(4, 5, 10, 0.95) 47% 100%);
+    radial-gradient(circle at 34% 18%, rgba(56, 189, 248, 0.2), transparent 26%),
+    radial-gradient(circle at 72% 38%, rgba(99, 102, 241, 0.32), transparent 32%),
+    radial-gradient(circle at 86% 78%, rgba(244, 63, 94, 0.16), transparent 24%),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.86) 0 54%, rgba(4, 5, 10, 0.97) 54% 100%);
   box-shadow: 0 34px 90px rgba(0, 0, 0, 0.5);
 }
 
@@ -28,8 +30,10 @@
 }
 
 .brand-mark {
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: 0;
+  text-transform: lowercase;
 }
 
 .language-switch {
@@ -70,7 +74,7 @@
 .landing-copy {
   position: relative;
   z-index: 3;
-  width: min(45%, 455px);
+  width: min(43%, 455px);
   margin: 108px 0 0 74px;
 }
 
@@ -97,5 +101,8 @@
   .landing-topbar { padding: 22px; flex-wrap: wrap; }
   .language-switch { margin-left: 0; }
   .auth-corner { margin-left: auto; }
-  .landing-copy { width: auto; margin: 54px 24px 0; }
+  .landing-copy {
+    width: min(76%, 455px);
+    margin: 54px 24px 0;
+  }
 }

@@ -1,0 +1,71 @@
+.glass-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.glass-item {
+  position: absolute;
+  object-fit: contain;
+  opacity: 0.72;
+  filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.32));
+}
+
+.glass-item-one {
+  top: 10%;
+  right: -5%;
+  width: 22%;
+  transform: rotate(-18deg);
+}
+
+.glass-item-two {
+  right: 21%;
+  bottom: -18%;
+  width: 24%;
+  transform: rotate(18deg);
+  opacity: 0.58;
+}
+
+.glass-item-three {
+  top: 30%;
+  right: -11%;
+  width: 19%;
+  transform: rotate(64deg);
+  opacity: 0.42;
+}
+
+.glass-item-four {
+  right: 30%;
+  bottom: 5%;
+  width: 15%;
+  transform: rotate(-42deg) scaleX(-1);
+  opacity: 0.34;
+}
+
+@media (max-width: 760px) {
+  .glass-item-one {
+    top: 48%;
+    right: -26%;
+    width: 40%;
+  }
+
+  .glass-item-two {
+    right: 18%;
+    bottom: -20%;
+    width: 36%;
+  }
+
+  .glass-item-three {
+    top: 62%;
+    right: -32%;
+    width: 34%;
+  }
+
+  .glass-item-four {
+    right: 44%;
+    bottom: 1%;
+    width: 24%;
+  }
+}

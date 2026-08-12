@@ -1,12 +1,12 @@
 .face-stage {
   position: absolute;
-  z-index: 2;
-  right: 1%;
-  bottom: -10%;
-  width: min(62%, 620px);
-  height: 86%;
+  z-index: 3;
+  right: 2%;
+  bottom: -16%;
+  width: min(48%, 500px);
+  height: 92%;
   pointer-events: none;
-  filter: drop-shadow(0 0 42px rgba(99, 102, 241, 0.46));
+  filter: drop-shadow(0 0 48px rgba(99, 102, 241, 0.36));
 }
 
 .face-image {
@@ -14,14 +14,14 @@
   height: 100%;
   object-fit: contain;
   object-position: center bottom;
-  transform: scaleX(-1);
 }
 
 @media (max-width: 760px) {
   .face-stage {
-    right: -32%;
-    bottom: -4%;
-    width: 112%;
-    height: 56%;
+    right: -26%;
+    bottom: -16%;
+    width: 92%;
+    height: 54%;
+    opacity: 0.72;
   }
 }

@@ -1,6 +1,7 @@
 import type { Goal } from './types';
 import type { AuthMode } from './AuthPanel';
 import { FaceSilhouette } from './FaceSilhouette';
+import { GlassDecor } from './GlassDecor';
 
 const problems = ['Туман после соцсетей', 'Потеря мотивации', 'Прокрастинация'];
 const goals: Goal[] = ['Фокус', 'Креативность', 'Детокс'];
@@ -38,7 +39,7 @@ export function Onboarding({
       <main className="landing-shell">
         <section className="landing-frame">
           <header className="landing-topbar">
-            <div className="brand-mark">PFC</div>
+            <div className="brand-mark">synap</div>
             <div className="language-switch" aria-label="Language">
               {languages.map((item) => (
                 <button
@@ -74,6 +75,7 @@ export function Onboarding({
           </div>
 
           <FaceSilhouette />
+          <GlassDecor />
         </section>
       </main>
     );
