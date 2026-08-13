@@ -1,22 +1,25 @@
 import { BrainCard } from './BrainCard';
+import { SciencePanel } from './SciencePanel';
+import { TrainingPanel } from './TrainingPanel';
+import type { BrainState } from '../../lib/brainLogic';
 import type { Tab } from './types';
 
 type Props = {
   activeTab: Tab;
+  brainState?: BrainState;
   focusMinutes: number;
   health: number;
+  onOpenCheckIn: () => void;
   onOpenJournal: () => void;
-  onOpenRescue: () => void;
-  onPickScreenshot: (file: File) => void;
 };
 
 export function Dashboard({
   activeTab,
+  brainState,
   focusMinutes,
   health,
+  onOpenCheckIn,
   onOpenJournal,
-  onOpenRescue,
-  onPickScreenshot,
 }: Props) {
   return (
     <main className="neuro-shell dashboard">
@@ -30,33 +33,22 @@ export function Dashboard({
 
       {activeTab === 'home' ? (
         <>
-          <BrainCard focusMinutes={focusMinutes} health={health} />
-          <button className="rescue-button" onClick={onOpenRescue} type="button">
-            🔥 ЭКСТРЕННАЯ НЕЙРО-РЕАНИМАЦИЯ (3 мин)
-          </button>
+          <BrainCard focusMinutes={focusMinutes} health={health} state={brainState} />
           <div className="secondary-actions">
-            <label className="secondary-button">
-              📸 Загрузить скриншот экранного времени
-              <input
-                accept="image/*"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) onPickScreenshot(file);
-                  event.target.value = '';
-                }}
-                type="file"
-              />
-            </label>
+            <button className="secondary-button" onClick={onOpenCheckIn} type="button">
+              📸 Daily Check-in и скриншот экранного времени
+            </button>
             <button className="secondary-button" onClick={onOpenJournal} type="button">
               🧪 Дневник состояний & Заземление
             </button>
           </div>
         </>
+      ) : activeTab === 'training' ? (
+        <TrainingPanel zone={brainState?.worstZone ?? 'pfc'} />
+      ) : activeTab === 'science' ? (
+        <SciencePanel />
       ) : (
-        <section className="placeholder-panel">
-          <h2>{tabTitle(activeTab)}</h2>
-          <p>Раздел готов к наполнению заданиями, графиками и социальными ритуалами.</p>
-        </section>
+        null
       )}
     </main>
   );
@@ -64,10 +56,9 @@ export function Dashboard({
 
 function tabTitle(tab: Tab) {
   const titles: Record<Tab, string> = {
-    home: 'Главная',
-    quests: 'Квесты',
+    home: 'Мой Мозг',
+    training: 'Тренировки',
     science: 'Наука',
-    network: 'Сеть',
   };
   return titles[tab];
 }

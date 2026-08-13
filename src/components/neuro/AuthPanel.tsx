@@ -47,6 +47,7 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
 
     if (mode === 'signup') {
       setMessage('Аккаунт создан. Проверь почту, если Supabase попросит подтверждение.');
+      window.setTimeout(onSuccess, 500);
       return;
     }
 

@@ -1,0 +1,59 @@
+.brain-map-wrap {
+  position: relative;
+  width: min(100%, 520px);
+  min-height: 330px;
+  margin: 0 auto 22px;
+}
+
+.brain-scan-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 34px rgba(99, 102, 241, 0.34));
+}
+
+.brain-spot {
+  position: absolute;
+  width: 22%;
+  height: 26%;
+  border-radius: 999px;
+  mix-blend-mode: screen;
+  opacity: 0.46;
+  filter: blur(18px);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.brain-spot:hover {
+  opacity: 0.72;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.brain-spot-pfc {
+  top: 38%;
+  left: 28%;
+}
+
+.brain-spot-limbic {
+  top: 46%;
+  left: 50%;
+}
+
+.brain-spot-hippocampus {
+  top: 64%;
+  left: 42%;
+}
+
+.brain-spot-amygdala {
+  top: 50%;
+  left: 68%;
+}
+
+.brain-spot.critical {
+  animation: pulseSpot 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes pulseSpot {
+  from { opacity: 0.42; }
+  to { opacity: 0.82; }
+}

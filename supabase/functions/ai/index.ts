@@ -39,13 +39,23 @@ Deno.serve(async (req) => {
       return json({ error: 'AI пока не настроен. Попроси наставника проверить секрет.' }, 503);
     }
 
-    const body = (await req.json()) as { prompt?: unknown; system?: unknown };
+    const body = (await req.json()) as {
+      imageBase64?: unknown;
+      imageMime?: unknown;
+      prompt?: unknown;
+      system?: unknown;
+    };
     const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
     const system = typeof body.system === 'string' ? body.system.trim() : '';
+    const imageBase64 = typeof body.imageBase64 === 'string' ? body.imageBase64.trim() : '';
+    const imageMime = typeof body.imageMime === 'string' ? body.imageMime.trim() : 'image/png';
 
     if (!prompt) return json({ error: 'Напиши запрос для AI.' }, 400);
     if (prompt.length > 10_000 || system.length > 5_000) {
       return json({ error: 'Запрос слишком длинный. Сделай его короче.' }, 400);
+    }
+    if (imageBase64.length > 8_000_000) {
+      return json({ error: 'Картинка слишком большая. Попробуй сжать скриншот.' }, 413);
     }
 
     const response = await fetch(
@@ -55,7 +65,14 @@ Deno.serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemInstruction: system ? { parts: [{ text: system }] } : undefined,
-          contents: [{ parts: [{ text: prompt }] }],
+          contents: [{
+            parts: [
+              { text: prompt },
+              ...(imageBase64
+                ? [{ inlineData: { data: imageBase64, mimeType: imageMime } }]
+                : []),
+            ],
+          }],
         }),
       },
     );

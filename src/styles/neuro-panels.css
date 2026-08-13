@@ -1,0 +1,49 @@
+.training-panel,
+.science-panel {
+  padding: 24px;
+  border: 1px solid rgba(99, 102, 241, 0.34);
+  border-radius: 8px;
+  background: rgba(13, 15, 23, 0.78);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+
+.training-panel p,
+.science-card p {
+  color: #c7d2fe;
+  line-height: 1.5;
+}
+
+.memory-grid,
+.breath-box,
+.stroop-row {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.memory-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.memory-grid span,
+.breath-box span,
+.stroop-row span {
+  display: grid;
+  min-height: 56px;
+  place-items: center;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.science-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.science-card {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}

@@ -1,10 +1,9 @@
 import type { Tab } from './types';
 
 const tabs: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: 'home', label: 'Главная', icon: '🏠' },
-  { id: 'quests', label: 'Квесты', icon: '🎨' },
-  { id: 'science', label: 'Наука', icon: '📊' },
-  { id: 'network', label: 'Сеть', icon: '👥' },
+  { id: 'home', label: 'Мой Мозг', icon: '🧠' },
+  { id: 'training', label: 'Тренировки', icon: '🎯' },
+  { id: 'science', label: 'Наука', icon: '📚' },
 ];
 
 type Props = {

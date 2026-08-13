@@ -1,14 +1,18 @@
+import { calculateCheckInState, type BrainState } from '../../lib/brainLogic';
+import { BrainMap } from './BrainMap';
+
 type Props = {
   focusMinutes: number;
   health: number;
+  state?: BrainState;
 };
 
-export function BrainCard({ focusMinutes, health }: Props) {
+export function BrainCard({ focusMinutes, health, state }: Props) {
+  const brainState = state ?? calculateCheckInState(7, 5, [], []);
+
   return (
     <section className="brain-card">
-      <div className="brain-orbit" aria-hidden="true">
-        <span>🧠</span>
-      </div>
+      <BrainMap state={brainState} />
       <div className="brain-copy">
         <p className="eyebrow">Состояние мозга</p>
         <h2>Префронтальная кора (ПФК)</h2>
@@ -29,7 +33,12 @@ export function BrainCard({ focusMinutes, health }: Props) {
           <span>Режим</span>
           <strong>Reboot</strong>
         </div>
+        <div>
+          <span>Уязвимая зона</span>
+          <strong>{brainState.zones[brainState.worstZone].label}</strong>
+        </div>
       </div>
+      <p className="brain-verdict">{brainState.verdict}</p>
     </section>
   );
 }
