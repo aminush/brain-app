@@ -9,6 +9,8 @@ type Props = {
   brainState?: BrainState;
   focusMinutes: number;
   health: number;
+  isAnalyzingScreenshot: boolean;
+  onAnalyzeScreenshot: (file: File) => void;
   onOpenCheckIn: () => void;
   onOpenJournal: () => void;
 };
@@ -18,6 +20,8 @@ export function Dashboard({
   brainState,
   focusMinutes,
   health,
+  isAnalyzingScreenshot,
+  onAnalyzeScreenshot,
   onOpenCheckIn,
   onOpenJournal,
 }: Props) {
@@ -35,8 +39,20 @@ export function Dashboard({
         <>
           <BrainCard focusMinutes={focusMinutes} health={health} state={brainState} />
           <div className="secondary-actions">
+            <label className="secondary-button">
+              {isAnalyzingScreenshot ? 'AI Vision анализирует...' : '📸 Загрузить скриншот экранного времени'}
+              <input
+                accept="image/*"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) onAnalyzeScreenshot(file);
+                  event.target.value = '';
+                }}
+                type="file"
+              />
+            </label>
             <button className="secondary-button" onClick={onOpenCheckIn} type="button">
-              📸 Daily Check-in и скриншот экранного времени
+              ⚡ Быстрый Daily Check-in
             </button>
             <button className="secondary-button" onClick={onOpenJournal} type="button">
               🧪 Дневник состояний & Заземление

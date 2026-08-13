@@ -25,9 +25,9 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-.memory-grid span,
+.memory-grid button,
 .breath-box span,
-.stroop-row span {
+.stroop-buttons button {
   display: grid;
   min-height: 56px;
   place-items: center;
@@ -36,14 +36,74 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+.memory-grid button.active {
+  background: #00f0ff;
+  color: #020617;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.68);
+}
+
+.score-line {
+  margin: 14px 0;
+  color: #00ff88;
+  font-weight: 800;
+}
+
+.stroop-word {
+  margin: 24px 0;
+  font-size: clamp(42px, 12vw, 82px);
+  font-weight: 900;
+  text-align: center;
+}
+
+.stroop-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stroop-buttons button {
+  min-height: 68px;
+  border-width: 2px;
+  color: #ffffff;
+  font-weight: 900;
+}
+
 .science-grid {
   display: grid;
   gap: 12px;
   margin-top: 16px;
 }
 
-.science-card {
+.science-card,
+.article-reader {
   padding: 16px;
+  border: 0;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  text-align: left;
+}
+
+.science-card span {
+  color: #00f0ff;
+  font-size: 13px;
+}
+
+.article-reader {
+  width: min(100%, 680px);
+  max-height: 88vh;
+  overflow: auto;
+  border: 1px solid rgba(99, 102, 241, 0.34);
+  background: rgba(13, 15, 23, 0.96);
+}
+
+.article-reader section {
+  margin-top: 18px;
+}
+
+.proof-box {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.09);
 }

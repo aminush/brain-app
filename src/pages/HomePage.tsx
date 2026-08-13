@@ -5,7 +5,9 @@ import { CheckInScreen } from '../components/neuro/CheckInScreen';
 import { Dashboard } from '../components/neuro/Dashboard';
 import { JournalModal } from '../components/neuro/JournalModal';
 import { Onboarding, type Language } from '../components/neuro/Onboarding';
+import { OnboardingQuizScreen } from '../components/neuro/OnboardingQuizScreen';
 import { BrainStateProvider, useBrainState } from '../context/BrainStateContext';
+import type { AppCategory, Symptom } from '../lib/brainTypes';
 import { supabase } from '../lib/supabase';
 import type { Tab } from '../components/neuro/types';
 import '../styles/neuro.css';
@@ -19,11 +21,13 @@ export function HomePage() {
 }
 
 function HomeContent() {
-  const { profile, saveCheckIn } = useBrainState();
+  const { profile, saveCheckIn, saveInitialProfile } = useBrainState();
   const [authMode, setAuthMode] = useState<AuthMode | null>(null);
   const [language, setLanguage] = useState<Language>('eng');
   const [isReady, setIsReady] = useState(false);
+  const [isOnboardingQuiz, setIsOnboardingQuiz] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [health, setHealth] = useState(42);
   const [focusMinutes, setFocusMinutes] = useState(35);
@@ -50,6 +54,40 @@ function HomeContent() {
     setActiveTab('home');
   };
 
+  const completeInitialQuiz = (input: Parameters<typeof saveInitialProfile>[0]) => {
+    const state = saveInitialProfile(input);
+    setHealth(state.health);
+    setFocusMinutes(Math.max(15, Math.round(state.health * 0.7)));
+    setIsOnboardingQuiz(false);
+    setIsReady(true);
+    setActiveTab('home');
+  };
+
+  const analyzeScreenshot = () => {
+    setIsAnalyzingScreenshot(true);
+    window.setTimeout(() => {
+      const input = profile?.input ?? {
+        appTypes: [] as AppCategory[],
+        screenTime: 6,
+        sleepHours: 7,
+        symptoms: [] as Symptom[],
+      };
+      const state = saveCheckIn({
+        ...input,
+        appTypes: Array.from(new Set([...input.appTypes, 'shortVideo'])),
+        screenTime: Math.min(15, input.screenTime + 2),
+        symptoms: Array.from(new Set<Symptom>([
+          ...input.symptoms,
+          'gadgetFatigue',
+          'stuckPhone',
+        ])).slice(0, 3),
+      });
+      setHealth(state.health);
+      setFocusMinutes(Math.max(15, Math.round(state.health * 0.7)));
+      setIsAnalyzingScreenshot(false);
+    }, 1200);
+  };
+
   const openAppAfterAuth = (hasProfile: boolean) => {
     setAuthMode(null);
     if (hasProfile) {
@@ -57,11 +95,15 @@ function HomeContent() {
       setIsReady(true);
       return;
     }
-    setIsCheckingIn(true);
+    setIsOnboardingQuiz(true);
   };
 
+  if (isOnboardingQuiz) {
+    return <OnboardingQuizScreen onComplete={completeInitialQuiz} />;
+  }
+
   if (isCheckingIn) {
-    return <CheckInScreen mode={isReady ? 'daily' : 'onboarding'} onComplete={completeCheckIn} />;
+    return <CheckInScreen onComplete={completeCheckIn} />;
   }
 
   if (!isReady) {
@@ -72,7 +114,7 @@ function HomeContent() {
           onBack={() => setAuthMode(null)}
           onSuccess={() => {
             setAuthMode(null);
-            setIsCheckingIn(true);
+            setIsOnboardingQuiz(true);
           }}
         />
       );
@@ -94,6 +136,8 @@ function HomeContent() {
         brainState={profile?.state}
         focusMinutes={focusMinutes}
         health={profile?.state.health ?? health}
+        isAnalyzingScreenshot={isAnalyzingScreenshot}
+        onAnalyzeScreenshot={analyzeScreenshot}
         onOpenCheckIn={() => setIsCheckingIn(true)}
         onOpenJournal={() => setIsJournalOpen(true)}
       />

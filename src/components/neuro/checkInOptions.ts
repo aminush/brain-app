@@ -15,6 +15,14 @@ export const symptomOptions: Array<{ id: Symptom; label: string }> = [
   { id: 'distracted', label: 'Легкая расфокусировка' },
 ];
 
+export const dailyStateOptions: Array<{ id: Symptom; label: string }> = [
+  { id: 'anxiety', label: 'тревога' },
+  { id: 'irritation', label: 'раздражительность' },
+  { id: 'gadgetFatigue', label: 'усталость от гаджетов' },
+  { id: 'stuckPhone', label: 'не могу оторваться от телефона' },
+  { id: 'fog', label: 'головной туман' },
+];
+
 export const quickQuestions: Array<{ id: Symptom; label: string }> = [
   { id: 'anxiety', label: 'Чувствуешь ли раздражительность или тревогу?' },
   { id: 'forgetful', label: 'Трудно ли сегодня удерживать факты в голове?' },

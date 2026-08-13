@@ -1,22 +1,6 @@
-export type BrainZone = 'pfc' | 'limbic' | 'hippocampus' | 'amygdala';
+import type { AppCategory, BrainState, BrainZone, BrainZoneState, Symptom } from './brainTypes';
 
-export type AppCategory = 'shortVideo' | 'messages' | 'search' | 'creative';
-
-export type Symptom = 'fog' | 'forgetful' | 'anxiety' | 'noMotivation' | 'distracted';
-
-export type BrainZoneState = {
-  color: string;
-  damage: number;
-  label: string;
-  status: string;
-};
-
-export type BrainState = {
-  health: number;
-  verdict: string;
-  worstZone: BrainZone;
-  zones: Record<BrainZone, BrainZoneState>;
-};
+export type { AppCategory, BrainState, BrainZone, BrainZoneState, Symptom };
 
 const labels: Record<BrainZone, string> = {
   pfc: 'ПФК',
@@ -29,6 +13,9 @@ const symptomZone: Record<Symptom, BrainZone> = {
   fog: 'pfc',
   forgetful: 'hippocampus',
   anxiety: 'amygdala',
+  irritation: 'amygdala',
+  gadgetFatigue: 'pfc',
+  stuckPhone: 'limbic',
   noMotivation: 'limbic',
   distracted: 'pfc',
 };
@@ -124,10 +111,9 @@ function buildVerdict(sleep: number, apps: AppCategory[], worst: BrainZone, goal
 }
 
 function zoneColor(damage: number) {
-  if (damage >= 70) return '#f43f5e';
-  if (damage >= 45) return '#f59e0b';
-  if (damage >= 25) return '#6366f1';
-  return '#38bdf8';
+  if (damage > 60) return '#ff0055';
+  if (damage > 30) return '#ffd700';
+  return '#00f0ff';
 }
 
 function zoneStatus(damage: number) {

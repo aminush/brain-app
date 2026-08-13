@@ -49,6 +49,44 @@
 
 .result-modal { text-align: center; }
 
+.grounding-modal {
+  width: min(100%, 560px);
+  padding: 22px;
+  border: 1px solid rgba(99, 102, 241, 0.34);
+  border-radius: 8px;
+  background: rgba(13, 15, 23, 0.92);
+}
+
+.grounding-progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.grounding-progress span {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.grounding-progress span.active {
+  background: #00f0ff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+}
+
+.grounding-modal textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid rgba(129, 140, 248, 0.42);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  padding: 14px;
+}
+
 .loader-ring {
   width: 58px;
   height: 58px;

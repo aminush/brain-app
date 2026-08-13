@@ -20,6 +20,7 @@ type BrainProfile = {
 
 type BrainStateContextValue = {
   profile: BrainProfile | null;
+  saveInitialProfile: (input: CheckInInput) => BrainState;
   saveCheckIn: (input: CheckInInput) => BrainState;
 };
 
@@ -31,17 +32,11 @@ export function BrainStateProvider({ children }: { children: React.ReactNode }) 
 
   const value = useMemo<BrainStateContextValue>(() => ({
     profile,
+    saveInitialProfile(input) {
+      return saveProfile(input, setProfile);
+    },
     saveCheckIn(input) {
-      const state = calculateCheckInState(
-        input.sleepHours,
-        input.screenTime,
-        input.appTypes,
-        input.symptoms,
-      );
-      const nextProfile = { input, state };
-      setProfile(nextProfile);
-      localStorage.setItem(storageKey, JSON.stringify(nextProfile));
-      return state;
+      return saveProfile(input, setProfile);
     },
   }), [profile]);
 
@@ -50,6 +45,19 @@ export function BrainStateProvider({ children }: { children: React.ReactNode }) 
       {children}
     </BrainStateContext.Provider>
   );
+}
+
+function saveProfile(input: CheckInInput, setProfile: (profile: BrainProfile) => void) {
+  const state = calculateCheckInState(
+    input.sleepHours,
+    input.screenTime,
+    input.appTypes,
+    input.symptoms,
+  );
+  const nextProfile = { input, state };
+  setProfile(nextProfile);
+  localStorage.setItem(storageKey, JSON.stringify(nextProfile));
+  return state;
 }
 
 export function useBrainState() {

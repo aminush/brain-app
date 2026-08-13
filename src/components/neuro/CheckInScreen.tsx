@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import type { AppCategory, Symptom } from '../../lib/brainLogic';
 import { analyzeScreenTimeImage } from '../../lib/screenTimeAi';
-import { appOptions, quickQuestions, symptomOptions } from './checkInOptions';
+import { dailyStateOptions } from './checkInOptions';
 import { MultiSelect } from './MultiSelect';
 
 type Props = {
-  mode?: 'daily' | 'onboarding';
   onComplete: (input: {
     appTypes: AppCategory[];
     screenTime: number;
@@ -14,7 +13,7 @@ type Props = {
   }) => void;
 };
 
-export function CheckInScreen({ mode = 'daily', onComplete }: Props) {
+export function CheckInScreen({ onComplete }: Props) {
   const [sleepHours, setSleepHours] = useState(7);
   const [screenTime, setScreenTime] = useState(5);
   const [appTypes, setAppTypes] = useState<AppCategory[]>([]);
@@ -27,24 +26,24 @@ export function CheckInScreen({ mode = 'daily', onComplete }: Props) {
     const result = await analyzeScreenTimeImage(file);
     setScreenTime(result.screenTime);
     setAiSummary(result.appSummary);
+    setAppTypes(detectApps(result.appSummary));
     setIsReading(false);
   }
 
   return (
     <main className="neuro-shell checkin-shell">
       <section className="checkin-panel">
-        <p className="eyebrow">{mode === 'onboarding' ? 'Onboarding quiz' : 'Daily check-in'}</p>
-        <h1>Давай настроим твой Нейро-Аватар</h1>
+        <p className="eyebrow">Daily check-in</p>
+        <h1>Daily Check-in за 30 секунд</h1>
 
         <section className="checkin-section">
           <h2>Трекер сна</h2>
-          <Slider label="Сколько часов в среднем ты спишь?" max={12} step={0.5} value={sleepHours} onChange={setSleepHours} />
-          <p className="hint">Сон восстанавливает гиппокамп и выводит токсины из ПФК.</p>
+          <Slider label="Сколько часов ты спала вчера?" max={12} step={0.5} value={sleepHours} onChange={setSleepHours} />
         </section>
 
         <section className="checkin-section">
           <h2>Экранное время</h2>
-          <Slider label="Среднее экранное время в день" max={15} step={0.5} value={screenTime} onChange={setScreenTime} />
+          <Slider label="Сегодняшнее экранное время" max={15} step={0.5} value={screenTime} onChange={setScreenTime} />
           <label className="upload-zone">
             {isReading ? 'ИИ анализирует скриншот...' : 'Загрузить скриншот экранного времени'}
             <input accept="image/*" onChange={(event) => {
@@ -53,32 +52,28 @@ export function CheckInScreen({ mode = 'daily', onComplete }: Props) {
             }} type="file" />
           </label>
           {aiSummary && <p className="hint">{aiSummary}</p>}
-          <MultiSelect limit={3} options={appOptions} selected={appTypes} onChange={setAppTypes} />
         </section>
 
         <section className="checkin-section">
-          <h2>Что опишет твое состояние прямо сейчас?</h2>
-          <MultiSelect limit={3} options={symptomOptions} selected={symptoms} onChange={setSymptoms} />
-          <div className="quick-grid">
-            {quickQuestions.map((question) => (
-              <button
-                className={symptoms.includes(question.id) ? 'quick-button active' : 'quick-button'}
-                key={question.id}
-                onClick={() => setSymptoms((items) => toggleSymptom(items, question.id))}
-                type="button"
-              >
-                {question.label}
-              </button>
-            ))}
-          </div>
+          <h2>Слова о текущем состоянии</h2>
+          <MultiSelect limit={3} options={dailyStateOptions} selected={symptoms} onChange={setSymptoms} />
         </section>
 
         <button className="primary-action" onClick={() => onComplete({ appTypes, screenTime, sleepHours, symptoms })} type="button">
-          {mode === 'onboarding' ? 'Сгенерировать Нейро-Аватар' : 'Анализировать состояние'}
+          Анализировать состояние
         </button>
       </section>
     </main>
   );
+}
+
+function detectApps(summary: string): AppCategory[] {
+  const text = summary.toLowerCase();
+  const apps: AppCategory[] = [];
+  if (/tiktok|reels|shorts|instagram/.test(text)) apps.push('shortVideo');
+  if (/telegram|whatsapp|news|новост/.test(text)) apps.push('messages');
+  if (/google|maps|карты|поиск/.test(text)) apps.push('search');
+  return apps;
 }
 
 function Slider({ label, max, onChange, step, value }: {
@@ -96,11 +91,3 @@ function Slider({ label, max, onChange, step, value }: {
     </label>
   );
 }
-
-function toggleSymptom(items: Symptom[], symptom: Symptom) {
-  if (items.includes(symptom)) return items.filter((item) => item !== symptom);
-  if (items.length >= 3) return items;
-  return [...items, symptom];
-}
-
-export { CheckInScreen as OnboardingScreen };
