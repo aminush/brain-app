@@ -1,28 +1,24 @@
 import { useEffect, useState } from 'react';
-import { AuthPanel, type AuthMode } from '../components/neuro/AuthPanel';
+import { AuthFlow } from '../components/neuro/AuthFlow';
 import { BottomTabs } from '../components/neuro/BottomTabs';
 import { CheckInScreen } from '../components/neuro/CheckInScreen';
 import { Dashboard } from '../components/neuro/Dashboard';
 import { JournalModal } from '../components/neuro/JournalModal';
-import { Onboarding, type Language } from '../components/neuro/Onboarding';
 import { OnboardingQuizScreen } from '../components/neuro/OnboardingQuizScreen';
 import { BrainStateProvider, useBrainState } from '../context/BrainStateContext';
 import type { AppCategory, Symptom } from '../lib/brainTypes';
+import type { Language } from '../lib/language';
 import { supabase } from '../lib/supabase';
+import { loadTrackerEntries } from '../lib/tracker';
 import type { Tab } from '../components/neuro/types';
 import '../styles/neuro.css';
 
 export function HomePage() {
-  return (
-    <BrainStateProvider>
-      <HomeContent />
-    </BrainStateProvider>
-  );
+  return <BrainStateProvider><HomeContent /></BrainStateProvider>;
 }
 
 function HomeContent() {
-  const { profile, saveCheckIn, saveInitialProfile } = useBrainState();
-  const [authMode, setAuthMode] = useState<AuthMode | null>(null);
+  const { profile, saveCheckIn, saveInitialProfile, updateSteps } = useBrainState();
   const [language, setLanguage] = useState<Language>('eng');
   const [isReady, setIsReady] = useState(false);
   const [isOnboardingQuiz, setIsOnboardingQuiz] = useState(false);
@@ -32,6 +28,7 @@ function HomeContent() {
   const [health, setHealth] = useState(42);
   const [focusMinutes, setFocusMinutes] = useState(35);
   const [isJournalOpen, setIsJournalOpen] = useState(false);
+  const [trackerEntries, setTrackerEntries] = useState(() => loadTrackerEntries());
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -47,8 +44,7 @@ function HomeContent() {
 
   const completeCheckIn = (input: Parameters<typeof saveCheckIn>[0]) => {
     const state = saveCheckIn(input);
-    setHealth(state.health);
-    setFocusMinutes(Math.max(15, Math.round(state.health * 0.7)));
+    applyBrainState(state.health);
     setIsCheckingIn(false);
     setIsReady(true);
     setActiveTab('home');
@@ -56,8 +52,7 @@ function HomeContent() {
 
   const completeInitialQuiz = (input: Parameters<typeof saveInitialProfile>[0]) => {
     const state = saveInitialProfile(input);
-    setHealth(state.health);
-    setFocusMinutes(Math.max(15, Math.round(state.health * 0.7)));
+    applyBrainState(state.health);
     setIsOnboardingQuiz(false);
     setIsReady(true);
     setActiveTab('home');
@@ -70,6 +65,7 @@ function HomeContent() {
         appTypes: [] as AppCategory[],
         screenTime: 6,
         sleepHours: 7,
+        steps: 0,
         symptoms: [] as Symptom[],
       };
       const state = saveCheckIn({
@@ -82,14 +78,12 @@ function HomeContent() {
           'stuckPhone',
         ])).slice(0, 3),
       });
-      setHealth(state.health);
-      setFocusMinutes(Math.max(15, Math.round(state.health * 0.7)));
+      applyBrainState(state.health);
       setIsAnalyzingScreenshot(false);
     }, 1200);
   };
 
   const openAppAfterAuth = (hasProfile: boolean) => {
-    setAuthMode(null);
     if (hasProfile) {
       setIsCheckingIn(false);
       setIsReady(true);
@@ -98,6 +92,25 @@ function HomeContent() {
     setIsOnboardingQuiz(true);
   };
 
+  const logOut = async () => {
+    await supabase.auth.signOut();
+    setIsReady(false);
+    setIsOnboardingQuiz(false);
+    setIsCheckingIn(false);
+    setActiveTab('home');
+  };
+
+  const changeSteps = (steps: number) => {
+    const state = updateSteps(steps);
+    if (!state) return;
+    applyBrainState(state.health);
+  };
+
+  const applyBrainState = (nextHealth: number) => {
+    setHealth(nextHealth);
+    setFocusMinutes(Math.max(15, Math.round(nextHealth * 0.7)));
+    setTrackerEntries(loadTrackerEntries());
+  };
   if (isOnboardingQuiz) {
     return <OnboardingQuizScreen onComplete={completeInitialQuiz} />;
   }
@@ -107,25 +120,8 @@ function HomeContent() {
   }
 
   if (!isReady) {
-    if (authMode) {
-      return (
-        <AuthPanel
-          mode={authMode}
-          onBack={() => setAuthMode(null)}
-          onSuccess={() => {
-            setAuthMode(null);
-            setIsOnboardingQuiz(true);
-          }}
-        />
-      );
-    }
-
     return (
-      <Onboarding
-        language={language}
-        onChangeLanguage={setLanguage}
-        onOpenAuth={setAuthMode}
-      />
+      <AuthFlow language={language} onAuthSuccess={() => setIsOnboardingQuiz(true)} onChangeLanguage={setLanguage} />
     );
   }
 
@@ -137,11 +133,17 @@ function HomeContent() {
         focusMinutes={focusMinutes}
         health={profile?.state.health ?? health}
         isAnalyzingScreenshot={isAnalyzingScreenshot}
+        language={language}
+        steps={profile?.input.steps ?? 0}
+        trackerEntries={trackerEntries}
         onAnalyzeScreenshot={analyzeScreenshot}
+        onChangeLanguage={setLanguage}
+        onChangeSteps={changeSteps}
+        onLogOut={logOut}
         onOpenCheckIn={() => setIsCheckingIn(true)}
         onOpenJournal={() => setIsJournalOpen(true)}
       />
-      <BottomTabs activeTab={activeTab} onChange={setActiveTab} />
+      <BottomTabs activeTab={activeTab} language={language} onChange={setActiveTab} />
       <JournalModal isOpen={isJournalOpen} onClose={() => setIsJournalOpen(false)} />
     </>
   );

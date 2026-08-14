@@ -21,30 +21,22 @@ const symptomZone: Record<Symptom, BrainZone> = {
 };
 
 export function calculateInitialBrainState(
-  sleepHours: number,
-  screenTime: number,
-  selectedApps: AppCategory[],
-  selectedSymptoms: Symptom[],
-  primaryGoal = 'Фокус',
+  sleepHours: number, screenTime: number, selectedApps: AppCategory[],
+  selectedSymptoms: Symptom[], primaryGoal = 'Фокус', steps = 0,
 ) {
-  return calculateBrainHealth(sleepHours, screenTime, selectedApps, selectedSymptoms, primaryGoal);
+  return calculateBrainHealth(sleepHours, screenTime, selectedApps, selectedSymptoms, primaryGoal, steps);
 }
 
 export function calculateCheckInState(
-  sleepHours: number,
-  screenTime: number,
-  selectedApps: AppCategory[],
-  selectedSymptoms: Symptom[],
+  sleepHours: number, screenTime: number, selectedApps: AppCategory[],
+  selectedSymptoms: Symptom[], steps = 0,
 ) {
-  return calculateBrainHealth(sleepHours, screenTime, selectedApps, selectedSymptoms);
+  return calculateBrainHealth(sleepHours, screenTime, selectedApps, selectedSymptoms, 'Фокус', steps);
 }
 
 export function calculateBrainHealth(
-  sleepHours: number,
-  screenTime: number,
-  appTypes: AppCategory[],
-  symptoms: Symptom[],
-  primaryGoal = 'Фокус',
+  sleepHours: number, screenTime: number, appTypes: AppCategory[],
+  symptoms: Symptom[], primaryGoal = 'Фокус', steps = 0,
 ): BrainState {
   const damage: Record<BrainZone, number> = {
     pfc: Math.max(0, screenTime - 7) * 3,
@@ -69,15 +61,26 @@ export function calculateBrainHealth(
 
   for (const symptom of symptoms) damage[symptomZone[symptom]] += 10;
 
+  const calmZones = new Set<BrainZone>();
+  if (steps > 0 && steps < 3000) {
+    damage.pfc += 10;
+    damage.amygdala += 10;
+  }
+
+  if (steps >= 6000) {
+    damage.hippocampus -= Math.min(20, damage.hippocampus);
+    calmZones.add('amygdala');
+  }
+
   const clipped = mapDamage(damage);
   const worstZone = getWorstZone(clipped);
   const health = Math.max(0, 100 - Math.round(average(Object.values(clipped))));
 
   return {
     health,
-    verdict: buildVerdict(sleepHours, appTypes, worstZone, primaryGoal),
+    verdict: buildVerdict(sleepHours, appTypes, worstZone, primaryGoal, steps),
     worstZone,
-    zones: toZoneState(clipped),
+    zones: toZoneState(clipped, calmZones),
   };
 }
 
@@ -87,11 +90,16 @@ function mapDamage(damage: Record<BrainZone, number>) {
   ) as Record<BrainZone, number>;
 }
 
-function toZoneState(damage: Record<BrainZone, number>) {
+function toZoneState(damage: Record<BrainZone, number>, calmZones: Set<BrainZone>) {
   return Object.fromEntries(
     Object.entries(damage).map(([zone, value]) => [
       zone,
-      { damage: value, color: zoneColor(value), label: labels[zone as BrainZone], status: zoneStatus(value) },
+      {
+        color: calmZones.has(zone as BrainZone) ? '#00f0ff' : zoneColor(value),
+        damage: value,
+        label: labels[zone as BrainZone],
+        status: calmZones.has(zone as BrainZone) ? 'спокойно' : zoneStatus(value),
+      },
     ]),
   ) as Record<BrainZone, BrainZoneState>;
 }
@@ -100,9 +108,11 @@ function getWorstZone(damage: Record<BrainZone, number>) {
   return Object.entries(damage).sort((a, b) => b[1] - a[1])[0][0] as BrainZone;
 }
 
-function buildVerdict(sleep: number, apps: AppCategory[], worst: BrainZone, goal: string) {
+function buildVerdict(sleep: number, apps: AppCategory[], worst: BrainZone, goal: string, steps: number) {
   const reasons = [];
   if (sleep < 6) reasons.push('критический дефицит сна');
+  if (steps > 0 && steps < 3000) reasons.push('мало движения');
+  if (steps >= 6000) reasons.push('ходьба поддержала гиппокамп');
   if (apps.includes('shortVideo')) reasons.push('перегруз от Reels');
   if (apps.includes('messages')) reasons.push('информационный стресс');
   if (apps.includes('search')) reasons.push('цифровая амнезия');

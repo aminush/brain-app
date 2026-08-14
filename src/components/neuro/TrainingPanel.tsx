@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
+import type { Language } from '../../lib/language';
 
 const colors = [
   { name: 'КРАСНЫЙ', value: '#ff0055' },
@@ -9,32 +10,50 @@ const colors = [
 ];
 
 type Props = {
+  language: Language;
   zone: BrainZone;
 };
 
-export function TrainingPanel({ zone }: Props) {
+export function TrainingPanel({ language, zone }: Props) {
   if (zone === 'hippocampus') return <MemoryGrid />;
   if (zone === 'amygdala') return <BreathTrainer />;
-  return <StroopTest />;
+  return <StroopTest language={language} />;
 }
 
-function StroopTest() {
+function StroopTest({ language }: { language: Language }) {
   const [round, setRound] = useState(() => createRound());
   const [score, setScore] = useState(0);
-  const [feedback, setFeedback] = useState('Выбери цвет краски, не слово.');
+  const copy = language === 'eng'
+    ? {
+        feedback: 'Choose the ink color, not the word.',
+        late: 'Too slow. New round.',
+        no: 'The brain followed the word',
+        score: 'Score',
+        title: 'Stroop test',
+        yes: 'Correct',
+      }
+    : {
+        feedback: 'Выбери цвет краски, не слово.',
+        late: 'Слишком долго. Новый раунд.',
+        no: 'Мозг повёлся на слово',
+        score: 'Очки',
+        title: 'Тест Струпа',
+        yes: 'Верно',
+      };
+  const [feedback, setFeedback] = useState(copy.feedback);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setFeedback('Слишком долго. Новый раунд.');
+      setFeedback(copy.late);
       setRound(createRound());
     }, 2000);
     return () => window.clearTimeout(id);
-  }, [round]);
+  }, [copy.late, round]);
 
   function answer(value: string) {
     const ok = value === round.ink.value;
     setScore((current) => ok ? current + 1 : Math.max(0, current - 1));
-    setFeedback(ok ? 'Верно' : 'Мозг повёлся на слово');
+    setFeedback(ok ? copy.yes : copy.no);
     navigator.vibrate?.(ok ? 35 : [20, 40, 20]);
     setRound(createRound());
   }
@@ -42,8 +61,8 @@ function StroopTest() {
   return (
     <section className="training-panel">
       <p className="eyebrow">ПФК тренировка</p>
-      <h2>Тест Струпа</h2>
-      <div className="score-line">Очки: {score}</div>
+      <h2>{copy.title}</h2>
+      <div className="score-line">{copy.score}: {score}</div>
       <div className="stroop-word" style={{ color: round.ink.value }}>{round.word.name}</div>
       <div className="stroop-buttons">
         {colors.map((color) => (

@@ -64,11 +64,21 @@
 }
 
 .google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
   margin-top: 14px;
   border: 1px solid rgba(226, 232, 240, 0.34);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 26px rgba(56, 189, 248, 0.16);
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
 }
 
 .text-button {

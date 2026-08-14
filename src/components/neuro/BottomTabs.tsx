@@ -1,17 +1,22 @@
 import type { Tab } from './types';
+import { text, type Language } from '../../lib/language';
 
-const tabs: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: 'home', label: 'Мой Мозг', icon: '🧠' },
-  { id: 'training', label: 'Тренировки', icon: '🎯' },
-  { id: 'science', label: 'Наука', icon: '📚' },
+const tabs: Array<{ id: Tab; labelKey: 'myBrain' | 'tracker' | 'training' | 'science'; icon: string }> = [
+  { id: 'home', labelKey: 'myBrain', icon: '🧠' },
+  { id: 'tracker', labelKey: 'tracker', icon: '📈' },
+  { id: 'training', labelKey: 'training', icon: '🎯' },
+  { id: 'science', labelKey: 'science', icon: '📚' },
 ];
 
 type Props = {
   activeTab: Tab;
+  language: Language;
   onChange: (tab: Tab) => void;
 };
 
-export function BottomTabs({ activeTab, onChange }: Props) {
+export function BottomTabs({ activeTab, language, onChange }: Props) {
+  const t = text[language];
+
   return (
     <nav className="bottom-tabs" aria-label="Главная навигация">
       {tabs.map((tab) => (
@@ -23,7 +28,7 @@ export function BottomTabs({ activeTab, onChange }: Props) {
           type="button"
         >
           <span>{tab.icon}</span>
-          <span>{tab.label}</span>
+          <span>{t[tab.labelKey]}</span>
         </button>
       ))}
     </nav>

@@ -9,6 +9,7 @@ type Props = {
     appTypes: AppCategory[];
     screenTime: number;
     sleepHours: number;
+    steps?: number;
     symptoms: Symptom[];
   }) => void;
 };
@@ -16,6 +17,7 @@ type Props = {
 export function CheckInScreen({ onComplete }: Props) {
   const [sleepHours, setSleepHours] = useState(7);
   const [screenTime, setScreenTime] = useState(5);
+  const [steps, setSteps] = useState(0);
   const [appTypes, setAppTypes] = useState<AppCategory[]>([]);
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
   const [aiSummary, setAiSummary] = useState('');
@@ -55,11 +57,16 @@ export function CheckInScreen({ onComplete }: Props) {
         </section>
 
         <section className="checkin-section">
+          <h2>Шаги</h2>
+          <Slider label="Сколько шагов сегодня?" max={12000} step={250} value={steps} onChange={setSteps} unit="" />
+        </section>
+
+        <section className="checkin-section">
           <h2>Слова о текущем состоянии</h2>
           <MultiSelect limit={3} options={dailyStateOptions} selected={symptoms} onChange={setSymptoms} />
         </section>
 
-        <button className="primary-action" onClick={() => onComplete({ appTypes, screenTime, sleepHours, symptoms })} type="button">
+        <button className="primary-action" onClick={() => onComplete({ appTypes, screenTime, sleepHours, steps, symptoms })} type="button">
           Анализировать состояние
         </button>
       </section>
@@ -76,17 +83,18 @@ function detectApps(summary: string): AppCategory[] {
   return apps;
 }
 
-function Slider({ label, max, onChange, step, value }: {
+function Slider({ label, max, onChange, step, unit, value }: {
   label: string;
   max: number;
   onChange: (value: number) => void;
   step: number;
+  unit?: string;
   value: number;
 }) {
   return (
     <label className="slider-field">
       <span>{label}</span>
-      <strong>{value} ч</strong>
+      <strong>{value.toLocaleString('ru-RU')} {unit ?? 'ч'}</strong>
       <input max={max} min={0} onChange={(event) => onChange(Number(event.target.value))} step={step} type="range" value={value} />
     </label>
   );

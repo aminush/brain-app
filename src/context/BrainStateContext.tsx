@@ -5,11 +5,13 @@ import {
   type Symptom,
   calculateCheckInState,
 } from '../lib/brainLogic';
+import { getTodayKey, saveTrackerEntry } from '../lib/tracker';
 
 type CheckInInput = {
   appTypes: AppCategory[];
   screenTime: number;
   sleepHours: number;
+  steps?: number;
   symptoms: Symptom[];
 };
 
@@ -22,6 +24,7 @@ type BrainStateContextValue = {
   profile: BrainProfile | null;
   saveInitialProfile: (input: CheckInInput) => BrainState;
   saveCheckIn: (input: CheckInInput) => BrainState;
+  updateSteps: (steps: number) => BrainState | null;
 };
 
 const storageKey = 'synap.brainProfile';
@@ -38,6 +41,10 @@ export function BrainStateProvider({ children }: { children: React.ReactNode }) 
     saveCheckIn(input) {
       return saveProfile(input, setProfile);
     },
+    updateSteps(steps) {
+      if (!profile) return null;
+      return saveProfile({ ...profile.input, steps }, setProfile);
+    },
   }), [profile]);
 
   return (
@@ -53,10 +60,17 @@ function saveProfile(input: CheckInInput, setProfile: (profile: BrainProfile) =>
     input.screenTime,
     input.appTypes,
     input.symptoms,
+    input.steps ?? 0,
   );
   const nextProfile = { input, state };
   setProfile(nextProfile);
   localStorage.setItem(storageKey, JSON.stringify(nextProfile));
+  saveTrackerEntry({
+    date: getTodayKey(),
+    health: state.health,
+    screenTime: input.screenTime,
+    steps: input.steps ?? 0,
+  });
   return state;
 }
 

@@ -2,22 +2,22 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 28px;
+  padding: 0;
 }
 
 .landing-frame {
   position: relative;
-  width: min(100%, 1080px);
-  min-height: 640px;
+  width: 100%;
+  min-height: 100vh;
   overflow: hidden;
-  border: 1px solid rgba(99, 102, 241, 0.34);
-  border-radius: 34px;
+  border: 0;
+  border-radius: 0;
   background:
     radial-gradient(circle at 34% 18%, rgba(56, 189, 248, 0.2), transparent 26%),
     radial-gradient(circle at 72% 38%, rgba(99, 102, 241, 0.32), transparent 32%),
     radial-gradient(circle at 86% 78%, rgba(244, 63, 94, 0.16), transparent 24%),
     linear-gradient(90deg, rgba(99, 102, 241, 0.86) 0 54%, rgba(4, 5, 10, 0.97) 54% 100%);
-  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
 }
 
 .landing-topbar {
@@ -75,7 +75,7 @@
   position: relative;
   z-index: 3;
   width: min(43%, 455px);
-  margin: 108px 0 0 74px;
+  margin: 108px 0 0 max(74px, calc((100vw - 1080px) / 2 + 74px));
 }
 
 .landing-copy h1 {
