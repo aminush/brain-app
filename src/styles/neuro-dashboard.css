@@ -1,12 +1,24 @@
+.dashboard {
+  width: min(100%, 1040px);
+}
+
 .brain-card,
 .placeholder-panel { padding: 24px; }
 
 .brain-card {
-  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.08fr) minmax(280px, 0.92fr);
+  gap: 28px;
+  align-items: center;
+  min-height: 420px;
   padding: 30px;
 }
 
-.brain-copy { text-align: center; }
+.brain-details {
+  min-width: 0;
+}
+
+.brain-copy { text-align: left; }
 .brain-copy h2 { margin-bottom: 20px; }
 
 .metric-line,
@@ -52,7 +64,7 @@
   margin-top: 16px;
   color: #c7d2fe;
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
 }
 
 .secondary-button {
@@ -96,4 +108,42 @@
 .tab-button.active {
   background: rgba(99, 102, 241, 0.24);
   color: #ffffff;
+}
+
+@media (max-width: 760px) {
+  .brain-card {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .brain-copy {
+    text-align: center;
+  }
+
+  .brain-copy h2 {
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+
+  .stats-row div {
+    padding: 10px;
+  }
+
+  .brain-verdict {
+    margin-top: 10px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .secondary-actions {
+    gap: 8px;
+  }
+
+  .secondary-button {
+    min-height: 46px;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
 }

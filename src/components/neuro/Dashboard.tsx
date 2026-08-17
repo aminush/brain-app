@@ -62,7 +62,6 @@ export function Dashboard({
       {activeTab === 'home' ? (
         <>
           <BrainCard focusMinutes={focusMinutes} health={health} language={language} state={brainState} />
-          <StepsWidget steps={steps} onChangeSteps={onChangeSteps} />
           <div className="secondary-actions">
             <label className="secondary-button">
               {isAnalyzingScreenshot ? t.analyze : t.screenshot}
@@ -83,6 +82,7 @@ export function Dashboard({
               {t.journal}
             </button>
           </div>
+          <StepsWidget steps={steps} onChangeSteps={onChangeSteps} />
         </>
       ) : activeTab === 'tracker' ? (
         <TrackerPanel entries={trackerEntries} />

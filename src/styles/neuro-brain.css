@@ -2,7 +2,7 @@
   position: relative;
   width: min(100%, 520px);
   min-height: 330px;
-  margin: 0 auto 22px;
+  margin: 0 auto;
 }
 
 .brain-scan-image {
@@ -56,4 +56,18 @@
 @keyframes pulseSpot {
   from { opacity: 0.52; }
   to { opacity: 0.95; }
+}
+
+@media (max-width: 760px) {
+  .brain-map-wrap {
+    width: min(100%, 330px);
+    min-height: 205px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brain-map-wrap {
+    width: min(100%, 280px);
+    min-height: 174px;
+  }
 }
