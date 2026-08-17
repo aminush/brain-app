@@ -5,11 +5,13 @@ import {
   type Symptom,
   calculateCheckInState,
 } from '../lib/brainLogic';
+import type { ScreenTimeResult } from '../lib/screenTimeAi';
 import { getTodayKey, saveTrackerEntry } from '../lib/tracker';
 
 type CheckInInput = {
   appTypes: AppCategory[];
   screenTime: number;
+  screenInsight?: ScreenTimeResult;
   sleepHours: number;
   steps?: number;
   symptoms: Symptom[];
@@ -68,7 +70,9 @@ function saveProfile(input: CheckInInput, setProfile: (profile: BrainProfile) =>
   saveTrackerEntry({
     date: getTodayKey(),
     health: state.health,
+    screenInsight: input.screenInsight,
     screenTime: input.screenTime,
+    sleepHours: input.sleepHours,
     steps: input.steps ?? 0,
   });
   return state;

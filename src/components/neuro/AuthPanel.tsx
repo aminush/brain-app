@@ -1,22 +1,25 @@
 import { useState } from 'react';
+import type { Language } from '../../lib/language';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 
 type AuthMode = 'login' | 'signup';
 
 type Props = {
+  language: Language;
   mode: AuthMode;
   onBack: () => void;
   onSuccess: () => void;
 };
 
-export function AuthPanel({ mode, onBack, onSuccess }: Props) {
+export function AuthPanel({ language, mode, onBack, onSuccess }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const title = mode === 'login' ? 'Log in' : 'Sign up';
-  const googleTitle = mode === 'login' ? 'Sign in with Google' : 'Sign up with Google';
+  const copy = language === 'eng' ? en : ru;
+  const title = mode === 'login' ? copy.login : copy.signup;
+  const googleTitle = mode === 'login' ? copy.googleLogin : copy.googleSignup;
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -24,7 +27,7 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
     setMessage('');
 
     if (!isSupabaseConfigured) {
-      setMessage('Supabase ещё не настроен. Добавь ключи в .env.');
+      setMessage(copy.supabaseMissing);
       setBusy(false);
       return;
     }
@@ -47,7 +50,7 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
     }
 
     if (mode === 'signup') {
-      setMessage('Аккаунт создан. Проверь почту, если Supabase попросит подтверждение.');
+      setMessage(copy.accountCreated);
       window.setTimeout(onSuccess, 500);
       return;
     }
@@ -57,7 +60,7 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
 
   async function signInWithGoogle() {
     if (!isSupabaseConfigured) {
-      setMessage('Supabase ещё не настроен. Добавь ключи в .env.');
+      setMessage(copy.supabaseMissing);
       return;
     }
 
@@ -73,7 +76,7 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
     <main className="neuro-shell onboarding">
       <section className="auth-page">
         <button className="text-button" onClick={onBack} type="button">
-          ← Back
+          {copy.back}
         </button>
         <div className="auth-card">
           <p className="eyebrow">Neuro access</p>
@@ -91,13 +94,13 @@ export function AuthPanel({ mode, onBack, onSuccess }: Props) {
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
               minLength={6}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="Password"
+              placeholder={copy.password}
               required
               type="password"
               value={password}
             />
             <button className="primary-action" disabled={busy} type="submit">
-              {busy ? 'Loading...' : title}
+              {busy ? copy.loading : title}
             </button>
           </form>
           {message && <p className="auth-message">{message}</p>}
@@ -135,3 +138,27 @@ function GoogleIcon() {
 }
 
 export type { AuthMode };
+
+const en = {
+  accountCreated: 'Account created. Check email if Supabase asks for confirmation.',
+  back: '← Back',
+  googleLogin: 'Sign in with Google',
+  googleSignup: 'Sign up with Google',
+  loading: 'Loading...',
+  login: 'Log in',
+  password: 'Password',
+  signup: 'Sign up',
+  supabaseMissing: 'Supabase is not configured yet. Add keys to .env.',
+};
+
+const ru = {
+  accountCreated: 'Аккаунт создан. Проверь почту, если Supabase попросит подтверждение.',
+  back: '← Назад',
+  googleLogin: 'Войти через Google',
+  googleSignup: 'Зарегистрироваться через Google',
+  loading: 'Загрузка...',
+  login: 'Войти',
+  password: 'Пароль',
+  signup: 'Регистрация',
+  supabaseMissing: 'Supabase ещё не настроен. Добавь ключи в .env.',
+};

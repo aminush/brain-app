@@ -19,8 +19,11 @@
 }
 
 .tracker-summary div,
-.week-day {
+.day-detail,
+.week-day,
+.weekly-story {
   padding: 14px;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
 }
@@ -46,6 +49,18 @@
   grid-template-columns: 44px 1fr;
   gap: 10px;
   align-items: center;
+  color: #eef2ff;
+  text-align: left;
+}
+
+.week-day.active {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.week-day:disabled {
+  cursor: default;
+  opacity: 0.55;
 }
 
 .week-day > span {
@@ -73,6 +88,38 @@
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #6366f1, #38bdf8);
+}
+
+.day-detail,
+.weekly-story {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.day-detail p {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  margin: 0;
+}
+
+.day-detail em {
+  color: #00ff88;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.weekly-story {
+  background: rgba(56, 189, 248, 0.09);
+}
+
+.weekly-story p {
+  margin: 0;
+}
+
+.weekly-story strong {
+  color: #ffffff;
 }
 
 @media (max-width: 620px) {

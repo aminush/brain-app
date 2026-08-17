@@ -1,11 +1,13 @@
 import { BrainCard } from './BrainCard';
 import { LanguageSwitch } from './LanguageSwitch';
 import { SciencePanel } from './SciencePanel';
+import { ScreenTimeInsight } from './ScreenTimeInsight';
 import { StepsWidget } from './StepsWidget';
 import { TrainingPanel } from './TrainingPanel';
 import { TrackerPanel } from './TrackerPanel';
 import type { BrainState } from '../../lib/brainLogic';
 import { text, type Language } from '../../lib/language';
+import type { ScreenTimeResult } from '../../lib/screenTimeAi';
 import type { TrackerEntry } from '../../lib/tracker';
 import type { Tab } from './types';
 
@@ -16,6 +18,7 @@ type Props = {
   health: number;
   isAnalyzingScreenshot: boolean;
   language: Language;
+  screenInsight?: ScreenTimeResult;
   steps: number;
   trackerEntries: TrackerEntry[];
   onAnalyzeScreenshot: (file: File) => void;
@@ -24,6 +27,7 @@ type Props = {
   onLogOut: () => void;
   onOpenCheckIn: () => void;
   onOpenJournal: () => void;
+  onRestartOnboarding: () => void;
 };
 
 export function Dashboard({
@@ -33,6 +37,7 @@ export function Dashboard({
   health,
   isAnalyzingScreenshot,
   language,
+  screenInsight,
   steps,
   trackerEntries,
   onAnalyzeScreenshot,
@@ -41,6 +46,7 @@ export function Dashboard({
   onLogOut,
   onOpenCheckIn,
   onOpenJournal,
+  onRestartOnboarding,
 }: Props) {
   const t = text[language];
 
@@ -62,6 +68,7 @@ export function Dashboard({
       {activeTab === 'home' ? (
         <>
           <BrainCard focusMinutes={focusMinutes} health={health} language={language} state={brainState} />
+          {screenInsight && <ScreenTimeInsight insight={screenInsight} language={language} />}
           <div className="secondary-actions">
             <label className="secondary-button">
               {isAnalyzingScreenshot ? t.analyze : t.screenshot}
@@ -78,6 +85,9 @@ export function Dashboard({
             <button className="secondary-button" onClick={onOpenCheckIn} type="button">
               {t.checkIn}
             </button>
+            <button className="secondary-button" onClick={onRestartOnboarding} type="button">
+              {t.start}
+            </button>
             <button className="secondary-button" onClick={onOpenJournal} type="button">
               {t.journal}
             </button>
@@ -85,11 +95,11 @@ export function Dashboard({
           <StepsWidget steps={steps} onChangeSteps={onChangeSteps} />
         </>
       ) : activeTab === 'tracker' ? (
-        <TrackerPanel entries={trackerEntries} />
+        <TrackerPanel entries={trackerEntries} language={language} />
       ) : activeTab === 'training' ? (
         <TrainingPanel language={language} zone={brainState?.worstZone ?? 'pfc'} />
       ) : activeTab === 'science' ? (
-        <SciencePanel />
+        <SciencePanel language={language} />
       ) : (
         null
       )}

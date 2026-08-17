@@ -1,100 +1,107 @@
 import { useState } from 'react';
-import type { AppCategory, Symptom } from '../../lib/brainLogic';
-import { analyzeScreenTimeImage } from '../../lib/screenTimeAi';
-import { dailyStateOptions } from './checkInOptions';
-import { MultiSelect } from './MultiSelect';
+import type { CheckInInput } from '../../context/BrainStateContext';
+import type { Symptom } from '../../lib/brainLogic';
+import type { Language } from '../../lib/language';
+import { getCheckInCopy, localizeMoods, localizeScroll, scrollOptions } from './checkInCopy';
 
 type Props = {
-  onComplete: (input: {
-    appTypes: AppCategory[];
-    screenTime: number;
-    sleepHours: number;
-    steps?: number;
-    symptoms: Symptom[];
-  }) => void;
+  language: Language;
+  onComplete: (input: CheckInInput) => void;
 };
 
-export function CheckInScreen({ onComplete }: Props) {
-  const [sleepHours, setSleepHours] = useState(7);
-  const [screenTime, setScreenTime] = useState(5);
-  const [steps, setSteps] = useState(0);
-  const [appTypes, setAppTypes] = useState<AppCategory[]>([]);
-  const [symptoms, setSymptoms] = useState<Symptom[]>([]);
-  const [aiSummary, setAiSummary] = useState('');
-  const [isReading, setIsReading] = useState(false);
+export function CheckInScreen({ language, onComplete }: Props) {
+  const [sleepHours, setSleepHours] = useState(7.5);
+  const [screenHours, setScreenHours] = useState(5);
+  const [screenMinutes, setScreenMinutes] = useState(12);
+  const [mood, setMood] = useState<Symptom>('distracted');
+  const [scrolling, setScrolling] = useState(scrollOptions[1]);
+  const [isDone, setIsDone] = useState(false);
+  const copy = getCheckInCopy(language);
 
-  async function readScreenshot(file: File) {
-    setIsReading(true);
-    const result = await analyzeScreenTimeImage(file);
-    setScreenTime(result.screenTime);
-    setAiSummary(result.appSummary);
-    setAppTypes(detectApps(result.appSummary));
-    setIsReading(false);
+  function finish() {
+    setIsDone(true);
+    window.setTimeout(() => {
+      onComplete({
+        appTypes: scrolling.apps,
+        screenTime: screenHours + screenMinutes / 60,
+        sleepHours,
+        symptoms: Array.from(new Set([mood, ...scrolling.symptoms])),
+      });
+    }, 760);
   }
 
   return (
     <main className="neuro-shell checkin-shell">
       <section className="checkin-panel">
         <p className="eyebrow">Daily check-in</p>
-        <h1>Daily Check-in за 30 секунд</h1>
+        <h1>{copy.brainTitle}</h1>
+        <OptionRow options={localizeMoods(language)} selected={mood} onSelect={setMood} />
 
         <section className="checkin-section">
-          <h2>Трекер сна</h2>
-          <Slider label="Сколько часов ты спала вчера?" max={12} step={0.5} value={sleepHours} onChange={setSleepHours} />
+          <h2>{copy.sleepTitle}</h2>
+          <Slider label={copy.sleepLabel} max={12} step={0.5} value={sleepHours} onChange={setSleepHours} />
         </section>
 
         <section className="checkin-section">
-          <h2>Экранное время</h2>
-          <Slider label="Сегодняшнее экранное время" max={15} step={0.5} value={screenTime} onChange={setScreenTime} />
-          <label className="upload-zone">
-            {isReading ? 'ИИ анализирует скриншот...' : 'Загрузить скриншот экранного времени'}
-            <input accept="image/*" onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (file) void readScreenshot(file);
-            }} type="file" />
-          </label>
-          {aiSummary && <p className="hint">{aiSummary}</p>}
+          <h2>{copy.screenTitle}</h2>
+          <div className="time-inputs">
+            <NumberField label={copy.hours} max={15} value={screenHours} onChange={setScreenHours} />
+            <NumberField label={copy.minutes} max={59} value={screenMinutes} onChange={setScreenMinutes} />
+          </div>
         </section>
 
         <section className="checkin-section">
-          <h2>Шаги</h2>
-          <Slider label="Сколько шагов сегодня?" max={12000} step={250} value={steps} onChange={setSteps} unit="" />
+          <h2>{copy.scrollTitle}</h2>
+          <OptionRow options={localizeScroll(language)} selected={scrolling.id} onSelect={(id) => {
+            const next = scrollOptions.find((option) => option.id === id);
+            if (next) setScrolling(next);
+          }} />
         </section>
 
-        <section className="checkin-section">
-          <h2>Слова о текущем состоянии</h2>
-          <MultiSelect limit={3} options={dailyStateOptions} selected={symptoms} onChange={setSymptoms} />
-        </section>
-
-        <button className="primary-action" onClick={() => onComplete({ appTypes, screenTime, sleepHours, steps, symptoms })} type="button">
-          Анализировать состояние
+        <button className="primary-action done-action" disabled={isDone} onClick={finish} type="button">
+          {isDone ? <span className="done-pulse"><span>✓</span></span> : copy.done}
         </button>
       </section>
     </main>
   );
 }
 
-function detectApps(summary: string): AppCategory[] {
-  const text = summary.toLowerCase();
-  const apps: AppCategory[] = [];
-  if (/tiktok|reels|shorts|instagram/.test(text)) apps.push('shortVideo');
-  if (/telegram|whatsapp|news|новост/.test(text)) apps.push('messages');
-  if (/google|maps|карты|поиск/.test(text)) apps.push('search');
-  return apps;
+function OptionRow<T extends string>({ onSelect, options, selected }: {
+  onSelect: (id: T) => void;
+  options: Array<{ id: T; label: string }>;
+  selected: T;
+}) {
+  return (
+    <div className="quick-grid">
+      {options.map((option) => (
+        <button className={option.id === selected ? 'quick-button active' : 'quick-button'} key={option.id} onClick={() => onSelect(option.id)} type="button">
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
-function Slider({ label, max, onChange, step, unit, value }: {
+function NumberField({ label, max, onChange, value }: { label: string; max: number; onChange: (value: number) => void; value: number }) {
+  return (
+    <label className="number-field">
+      <span>{label}</span>
+      <input max={max} min={0} onChange={(event) => onChange(Number(event.target.value))} type="number" value={value} />
+    </label>
+  );
+}
+
+function Slider({ label, max, onChange, step, value }: {
   label: string;
   max: number;
   onChange: (value: number) => void;
   step: number;
-  unit?: string;
   value: number;
 }) {
   return (
     <label className="slider-field">
       <span>{label}</span>
-      <strong>{value.toLocaleString('ru-RU')} {unit ?? 'ч'}</strong>
+      <strong>{value.toLocaleString('en-US')}h</strong>
       <input max={max} min={0} onChange={(event) => onChange(Number(event.target.value))} step={step} type="range" value={value} />
     </label>
   );

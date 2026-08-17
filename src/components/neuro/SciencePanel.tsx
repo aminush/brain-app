@@ -1,59 +1,59 @@
 import { useState } from 'react';
+import type { Language } from '../../lib/language';
 
 const articles = [
   {
-    proof: 'Обзор о сне и эмоциях: https://pmc.ncbi.nlm.nih.gov/articles/PMC4286245/',
-    read: '2 мин чтения',
-    subtitle: 'Почему недосып делает эмоции громче.',
-    title: 'Кортизол и Амигдала',
+    action: 'Keep short-form video out of your last hour before sleep.',
+    proof: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11236742/',
+    read: '2 min read',
+    title: 'Why your brain wants to scroll',
     sections: [
-      ['Что происходит', 'Когда сна мало, ПФК хуже тормозит эмоциональные реакции. Амигдала начинает реагировать резче, поэтому тревога и раздражение ощущаются сильнее.'],
-      ['Простыми словами', 'Это похоже на машину без хороших тормозов: сигнал тревоги включается быстрее, а выключается медленнее.'],
+      ['🧠 What happens', 'Fast rewards train the brain to expect constant novelty. Long tasks can start feeling too slow.'],
+      ['📱 Why short videos are so engaging', 'The next clip is unpredictable, so curiosity keeps asking for one more swipe.'],
+      ['💡 What you can do', 'Add friction: move the app away from your first screen.'],
     ],
   },
   {
-    proof: 'Sparrow et al., Science 2011: https://www.science.org/doi/10.1126/science.1207745',
-    read: '3 мин чтения',
-    subtitle: 'Почему поисковики меняют то, как мы запоминаем.',
-    title: 'Цифровая амнезия',
+    action: 'Try a 20-minute no-phone block before homework.',
+    proof: 'https://www.science.org/doi/10.1126/science.1207745',
+    read: '2 min read',
+    title: 'Why focus feels fragile',
     sections: [
-      ['Что происходит', 'Если мозг ожидает, что факт всегда можно найти, он чаще запоминает путь к информации, а не саму информацию.'],
-      ['Простыми словами', 'Гиппокамп меньше тренируется удерживать детали, когда телефон всегда играет роль внешней памяти.'],
+      ['🧠 What happens', 'When information is always searchable, the brain may remember the path more than the detail.'],
+      ['📱 Why apps make it harder', 'Switching between feeds and tasks keeps resetting attention.'],
+      ['💡 What you can do', 'Put one task on screen and write the next tiny step on paper.'],
     ],
   },
   {
-    proof: 'EEG-исследование коротких видео: https://pmc.ncbi.nlm.nih.gov/articles/PMC11236742/',
-    read: '2 мин чтения',
-    subtitle: 'Как бесконечная лента давит на внимание.',
-    title: 'Reels и лимбическая система',
+    action: 'Aim for 7+ hours tonight and compare tomorrow’s focus.',
+    proof: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4286245/',
+    read: '2 min read',
+    title: 'Sleep is focus training',
     sections: [
-      ['Что происходит', 'Короткие видео дают частые быстрые награды. Лимбическая система привыкает к лёгкой стимуляции, а ПФК сложнее держит длинную задачу.'],
-      ['Простыми словами', 'После ленты скучная, но важная работа кажется слишком медленной, потому что мозг ждёт быстрый дофаминовый щелчок.'],
-    ],
-  },
-  {
-    proof: 'Обзор о BDNF и физической активности: https://pmc.ncbi.nlm.nih.gov/articles/PMC3772595/',
-    read: '3 мин чтения',
-    subtitle: 'Как 15 минут ходьбы помогают гиппокампу восстановиться после соцсетей.',
-    title: 'BDNF и Шаги',
-    sections: [
-      ['Что происходит', 'Ходьба усиливает кровоток и поддерживает BDNF — белок, который помогает нейронам расти, соединяться и лучше переживать стресс.'],
-      ['Простыми словами', 'После перегруза лентой прогулка даёт гиппокампу сигнал: можно снова учиться, помнить и собирать внимание.'],
+      ['🧠 What happens', 'Less sleep makes the prefrontal cortex worse at calming emotional signals.'],
+      ['📱 Why nights matter', 'Late scrolling delays the moment your brain can downshift.'],
+      ['💡 What you can do', 'Charge the phone away from bed for one night.'],
     ],
   },
 ];
 
-export function SciencePanel() {
+type Props = {
+  language: Language;
+};
+
+export function SciencePanel({ language }: Props) {
   const [active, setActive] = useState<(typeof articles)[number] | null>(null);
+  const copy = language === 'eng' ? en : ru;
+
   return (
     <section className="science-panel">
-      <p className="eyebrow">Научная база</p>
-      <h2>Почему мозг уходит в туман</h2>
+      <p className="eyebrow">{copy.science}</p>
+      <h2>{copy.title}</h2>
       <div className="science-grid">
         {articles.map((article) => (
           <button className="science-card" key={article.title} onClick={() => setActive(article)} type="button">
             <h3>{article.title}</h3>
-            <p>{article.subtitle}</p>
+            <p>{article.sections[0][1]}</p>
             <span>{article.read}</span>
           </button>
         ))}
@@ -64,20 +64,36 @@ export function SciencePanel() {
             <button className="icon-button" onClick={() => setActive(null)} type="button">×</button>
             <p className="eyebrow">{active.read}</p>
             <h2>{active.title}</h2>
-            <p>{active.subtitle}</p>
-            {active.sections.map(([title, text]) => (
+            {active.sections.map(([title, body]) => (
               <section key={title}>
                 <h3>{title}</h3>
-                <p>{text}</p>
+                <p>{body}</p>
               </section>
             ))}
             <div className="proof-box">
-              <strong>Доказано наукой</strong>
+              <strong>{copy.source}</strong>
               <p>{active.proof}</p>
             </div>
+            <button className="primary-action" onClick={() => setActive(null)} type="button">
+              {copy.tryThis} {active.action}
+            </button>
           </article>
         </div>
       )}
     </section>
   );
 }
+
+const en = {
+  science: 'Science',
+  source: 'Source',
+  title: 'Learn, then apply',
+  tryThis: 'Try this →',
+};
+
+const ru = {
+  science: 'Наука',
+  source: 'Источник',
+  title: 'Узнай и примени',
+  tryThis: 'Попробуй →',
+};

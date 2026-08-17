@@ -67,6 +67,13 @@
   text-align: left;
 }
 
+.synap-note {
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .secondary-button {
   display: grid;
   min-height: 58px;

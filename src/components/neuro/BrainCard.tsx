@@ -43,6 +43,9 @@ export function BrainCard({ focusMinutes, health, language, state }: Props) {
           </div>
         </div>
         <p className="brain-verdict">{brainState.verdict}</p>
+        <p className="synap-note">
+          Synap Index — an app-generated score based on your tracked habits. Not a medical measurement.
+        </p>
       </div>
     </section>
   );

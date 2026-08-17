@@ -2,9 +2,11 @@ import type { AppCategory, Symptom } from '../../lib/brainLogic';
 
 export const appOptions: Array<{ id: AppCategory; label: string }> = [
   { id: 'shortVideo', label: 'Короткие видео (TikTok / Reels / Shorts)' },
+  { id: 'gaming', label: 'Игры' },
   { id: 'messages', label: 'Мессенджеры и Новости (Telegram / WhatsApp)' },
   { id: 'search', label: 'Поисковики и Навигация (Google / Карты)' },
-  { id: 'creative', label: 'Обучение / Творчество / Игры' },
+  { id: 'creative', label: 'Обучение / Творчество' },
+  { id: 'other', label: 'Другое' },
 ];
 
 export const symptomOptions: Array<{ id: Symptom; label: string }> = [
@@ -13,6 +15,7 @@ export const symptomOptions: Array<{ id: Symptom; label: string }> = [
   { id: 'anxiety', label: 'Раздражительность и тревога' },
   { id: 'noMotivation', label: 'Нет сил и мотивации на сложные задачи' },
   { id: 'distracted', label: 'Легкая расфокусировка' },
+  { id: 'gadgetFatigue', label: 'Другое' },
 ];
 
 export const dailyStateOptions: Array<{ id: Symptom; label: string }> = [

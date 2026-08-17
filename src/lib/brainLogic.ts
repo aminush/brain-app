@@ -58,6 +58,11 @@ export function calculateBrainHealth(
   if (appTypes.includes('messages')) damage.amygdala += 30;
   if (appTypes.includes('search')) damage.hippocampus += 20;
   if (appTypes.includes('creative')) damage.pfc -= 15;
+  if (appTypes.includes('gaming')) {
+    damage.limbic += 24;
+    damage.pfc += 12;
+  }
+  if (appTypes.includes('other')) damage.pfc += 6;
 
   for (const symptom of symptoms) damage[symptomZone[symptom]] += 10;
 
@@ -116,6 +121,7 @@ function buildVerdict(sleep: number, apps: AppCategory[], worst: BrainZone, goal
   if (apps.includes('shortVideo')) reasons.push('перегруз от Reels');
   if (apps.includes('messages')) reasons.push('информационный стресс');
   if (apps.includes('search')) reasons.push('цифровая амнезия');
+  if (apps.includes('gaming')) reasons.push('долгие игровые сессии');
   const prefix = reasons.length ? reasons.join(' + ') : 'стартовый профиль стабилен';
   return `${capitalize(prefix)}: ${labels[worst]} требует внимания. Цель: ${goal}.`;
 }

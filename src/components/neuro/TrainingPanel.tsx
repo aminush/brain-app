@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
 import type { Language } from '../../lib/language';
+import { ReplaceScrollPanel } from './ReplaceScrollPanel';
+import { getBreathCopy, getMemoryCopy } from './trainingCopy';
 
 const colors = [
   { name: 'КРАСНЫЙ', value: '#ff0055' },
@@ -15,8 +17,9 @@ type Props = {
 };
 
 export function TrainingPanel({ language, zone }: Props) {
-  if (zone === 'hippocampus') return <MemoryGrid />;
-  if (zone === 'amygdala') return <BreathTrainer />;
+  if (zone === 'hippocampus') return <MemoryGrid language={language} />;
+  if (zone === 'amygdala') return <BreathTrainer language={language} />;
+  if (zone === 'limbic') return <ReplaceScrollPanel language={language} />;
   return <StroopTest language={language} />;
 }
 
@@ -60,7 +63,7 @@ function StroopTest({ language }: { language: Language }) {
 
   return (
     <section className="training-panel">
-      <p className="eyebrow">ПФК тренировка</p>
+      <p className="eyebrow">{language === 'eng' ? 'PFC training' : 'Тренировка ПФК'}</p>
       <h2>{copy.title}</h2>
       <div className="score-line">{copy.score}: {score}</div>
       <div className="stroop-word" style={{ color: round.ink.value }}>{round.word.name}</div>
@@ -76,41 +79,42 @@ function StroopTest({ language }: { language: Language }) {
   );
 }
 
-function MemoryGrid() {
+function MemoryGrid({ language }: { language: Language }) {
+  const copy = getMemoryCopy(language);
   const [sequence, setSequence] = useState<number[]>([]);
   const [active, setActive] = useState<number | null>(null);
   const [input, setInput] = useState<number[]>([]);
-  const [status, setStatus] = useState('Нажми старт и запомни порядок.');
+  const [status, setStatus] = useState(copy.ready);
 
   function start() {
     const next = shuffle(Array.from({ length: 9 }, (_, index) => index)).slice(0, 4);
     setSequence(next);
     setInput([]);
-    setStatus('Смотри внимательно.');
+    setStatus(copy.watch);
     next.forEach((cell, index) => {
       window.setTimeout(() => setActive(cell), index * 650);
       window.setTimeout(() => setActive(null), index * 650 + 380);
     });
-    window.setTimeout(() => setStatus('Теперь повтори порядок.'), next.length * 650);
+    window.setTimeout(() => setStatus(copy.repeat), next.length * 650);
   }
 
   function pick(cell: number) {
-    if (!sequence.length || status !== 'Теперь повтори порядок.') return;
+    if (!sequence.length || status !== copy.repeat) return;
     const nextInput = [...input, cell];
     setInput(nextInput);
     const ok = sequence[nextInput.length - 1] === cell;
     navigator.vibrate?.(ok ? 25 : [20, 40, 20]);
     if (!ok) {
-      setStatus('Ошибка. Попробуй ещё раз.');
+      setStatus(copy.miss);
       return;
     }
-    if (nextInput.length === sequence.length) setStatus('Отлично, гиппокамп ожил.');
+    if (nextInput.length === sequence.length) setStatus(copy.win);
   }
 
   return (
     <section className="training-panel">
       <p className="eyebrow">Гиппокамп</p>
-      <h2>Сетка памяти</h2>
+      <h2>{copy.title}</h2>
       <div className="memory-grid">
         {Array.from({ length: 9 }, (_, cell) => (
           <button className={active === cell ? 'active' : ''} key={cell} onClick={() => pick(cell)} type="button">
@@ -119,18 +123,19 @@ function MemoryGrid() {
         ))}
       </div>
       <p>{status}</p>
-      <button className="primary-action" onClick={start} type="button">Старт</button>
+      <button className="primary-action" onClick={start} type="button">{copy.start}</button>
     </section>
   );
 }
 
-function BreathTrainer() {
+function BreathTrainer({ language }: { language: Language }) {
+  const copy = getBreathCopy(language);
   return (
     <section className="training-panel">
-      <p className="eyebrow">Амигдала</p>
-      <h2>Дыхание по квадрату</h2>
+      <p className="eyebrow">{copy.zone}</p>
+      <h2>{copy.title}</h2>
       <div className="breath-box"><span>4</span><span>4</span><span>4</span><span>4</span></div>
-      <p>Вдох, пауза, выдох, пауза. Повтори цикл 2 минуты.</p>
+      <p>{copy.text}</p>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 export type BrainZone = 'pfc' | 'limbic' | 'hippocampus' | 'amygdala';
 
-export type AppCategory = 'shortVideo' | 'messages' | 'search' | 'creative';
+export type AppCategory = 'shortVideo' | 'messages' | 'search' | 'creative' | 'gaming' | 'other';
 
 export type Symptom =
   | 'fog'
