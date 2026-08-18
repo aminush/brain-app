@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AuthFlow } from '../components/neuro/AuthFlow';
+import { AppOverview } from '../components/neuro/AppOverview';
 import { BottomTabs } from '../components/neuro/BottomTabs';
 import { CheckInScreen } from '../components/neuro/CheckInScreen';
 import { Dashboard } from '../components/neuro/Dashboard';
@@ -24,6 +25,7 @@ function HomeContent() {
   const [language, setLanguage] = useState<Language>('eng');
   const [isReady, setIsReady] = useState(false);
   const [isOnboardingQuiz, setIsOnboardingQuiz] = useState(false);
+  const [isOverviewOpen, setIsOverviewOpen] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('home');
@@ -57,6 +59,7 @@ function HomeContent() {
     const state = saveInitialProfile(input);
     applyBrainState(state.health);
     setIsOnboardingQuiz(false);
+    setIsOverviewOpen(true);
     setIsReady(true);
     setActiveTab('home');
   };
@@ -94,6 +97,7 @@ function HomeContent() {
     await supabase.auth.signOut();
     setIsReady(false);
     setIsOnboardingQuiz(false);
+    setIsOverviewOpen(false);
     setIsCheckingIn(false);
     setActiveTab('home');
   };
@@ -117,6 +121,10 @@ function HomeContent() {
     return <CheckInScreen language={language} onComplete={completeCheckIn} />;
   }
 
+  if (isOverviewOpen) {
+    return <AppOverview language={language} onContinue={() => setIsOverviewOpen(false)} />;
+  }
+
   if (!isReady) {
     return (
       <AuthFlow language={language} onAuthSuccess={finishAuth} onChangeLanguage={setLanguage} onPlanReady={setPlannedInput} />
@@ -132,6 +140,7 @@ function HomeContent() {
         health={profile?.state.health ?? health}
         isAnalyzingScreenshot={isAnalyzingScreenshot}
         language={language}
+        selectedHabitTrackId={profile?.input.selectedHabitTrackId}
         screenInsight={profile?.input.screenInsight}
         steps={profile?.input.steps ?? 0}
         trackerEntries={trackerEntries}
@@ -141,7 +150,6 @@ function HomeContent() {
         onLogOut={logOut}
         onOpenCheckIn={() => setIsCheckingIn(true)}
         onOpenJournal={() => setIsJournalOpen(true)}
-        onRestartOnboarding={() => setIsOnboardingQuiz(true)}
       />
       <BottomTabs activeTab={activeTab} language={language} onChange={setActiveTab} />
       <JournalModal isOpen={isJournalOpen} onClose={() => setIsJournalOpen(false)} />

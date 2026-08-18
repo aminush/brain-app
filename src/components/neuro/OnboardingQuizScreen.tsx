@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { CheckInInput } from '../../context/BrainStateContext';
 import type { AppCategory, Symptom } from '../../lib/brainLogic';
+import type { HabitTrackId } from '../../lib/habitTracks';
 import type { Language } from '../../lib/language';
 import { MultiSelect } from './MultiSelect';
 import {
@@ -86,9 +87,21 @@ function buildInput(appTypes: AppCategory[], selectedGoal: string): CheckInInput
   return {
     appTypes,
     screenTime: 5.2,
+    selectedHabitTrackId: goalToTrackId(selectedGoal),
     sleepHours: selectedGoal === 'Recovery' ? 6.5 : 7.5,
     symptoms: mapSymptoms(appTypes, selectedGoal),
   };
+}
+
+function goalToTrackId(goal: string): HabitTrackId {
+  const tracks: Record<string, HabitTrackId> = {
+    Discipline: 'discipline',
+    'Digital reset': 'digital_reset',
+    Focus: 'focus',
+    Memory: 'memory',
+    Recovery: 'recovery',
+  };
+  return tracks[goal] ?? 'focus';
 }
 
 function mapSymptoms(appTypes: AppCategory[], selectedGoal: string): Symptom[] {

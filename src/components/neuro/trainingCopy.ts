@@ -29,13 +29,13 @@ const memoryRu = {
 };
 
 const breathEn = {
-  text: 'Inhale, hold, exhale, hold. Repeat for 2 minutes.',
-  title: 'Box breathing',
+  text: 'Follow the outline: inhale 4, hold 4, exhale 4, hold 4. One full square takes 16 seconds.',
+  title: '4-4-4-4 breathing',
   zone: 'Amygdala',
 };
 
 const breathRu = {
-  text: 'Вдох, пауза, выдох, пауза. Повтори цикл 2 минуты.',
-  title: 'Дыхание по квадрату',
+  text: 'Следуй за контуром: вдох 4, пауза 4, выдох 4, пауза 4. Один квадрат длится 16 секунд.',
+  title: 'Дыхание 4-4-4-4',
   zone: 'Амигдала',
 };

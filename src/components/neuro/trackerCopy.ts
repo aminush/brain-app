@@ -18,9 +18,12 @@ const en = {
   sleepInsight: 'You focus better on days when you sleep 7+ hours.',
   sleepShort: 'Sleep',
   spent: 'You spent',
+  steps: 'Steps',
+  stepsShort: 'Steps',
   strongestHabit: 'Your strongest habit',
   tracker: 'Tracker',
   week: 'Your week',
+  weeklyStats: 'Weekly stats',
 };
 
 const ru = {
@@ -35,7 +38,10 @@ const ru = {
   sleep: 'Сон',
   sleepInsight: 'В дни со сном 7+ часов фокус лучше.',
   spent: 'Ты провела',
+  steps: 'Шаги',
+  stepsShort: 'Шаги',
   strongestHabit: 'Самая сильная привычка',
   tracker: 'Трекер',
   week: 'Твоя неделя',
+  weeklyStats: 'Недельная статистика',
 };

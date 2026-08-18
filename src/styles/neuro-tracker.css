@@ -1,3 +1,8 @@
+.tracker-stack {
+  display: grid;
+  gap: 18px;
+}
+
 .habit-panel {
   display: grid;
   gap: 18px;
@@ -6,6 +11,31 @@
   border-radius: 8px;
   background: rgba(13, 15, 23, 0.78);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+
+.weekly-tracker-panel {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid rgba(99, 102, 241, 0.34);
+  border-radius: 8px;
+  background: rgba(13, 15, 23, 0.78);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+
+.weekly-tracker-heading {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+}
+
+.weekly-tracker-heading h2 {
+  font-size: 28px;
+}
+
+.weekly-tracker-heading span {
+  color: #38bdf8;
+  font-weight: 800;
 }
 
 .habit-header {
@@ -88,10 +118,106 @@
 }
 
 .habit-track-detail p,
+.weekly-tracker-panel p,
 .daily-task p,
 .habit-detail-text {
   color: #c7d2fe;
   line-height: 1.5;
+}
+
+.tracker-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.tracker-summary div,
+.day-detail,
+.week-day {
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tracker-summary span,
+.tracker-bar small {
+  color: #c7d2fe;
+}
+
+.tracker-summary strong {
+  display: block;
+  margin-top: 4px;
+  color: #ffffff;
+}
+
+.day-detail {
+  display: grid;
+  gap: 10px;
+}
+
+.day-detail p {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  margin: 0;
+}
+
+.day-detail em {
+  color: #00ff88;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.week-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.week-day {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  align-items: center;
+  color: #eef2ff;
+  text-align: left;
+}
+
+.week-day.active {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.week-day:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.week-day > span {
+  color: #38bdf8;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.tracker-bar {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.tracker-bar span {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(129, 140, 248, 0.18);
+}
+
+.tracker-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366f1, #38bdf8);
 }
 
 .habit-timeline {
@@ -188,4 +314,7 @@
   .habit-header { display: grid; }
   .habit-header strong { white-space: normal; }
   .habit-detail-layout { grid-template-columns: 1fr; }
+  .tracker-summary { grid-template-columns: 1fr; }
+  .week-day { grid-template-columns: 1fr; }
+  .weekly-tracker-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
 }

@@ -6,6 +6,7 @@ import { StepsWidget } from './StepsWidget';
 import { TrainingPanel } from './TrainingPanel';
 import { TrackerPanel } from './TrackerPanel';
 import type { BrainState } from '../../lib/brainLogic';
+import type { HabitTrackId } from '../../lib/habitTracks';
 import { text, type Language } from '../../lib/language';
 import type { ScreenTimeResult } from '../../lib/screenTimeAi';
 import type { TrackerEntry } from '../../lib/tracker';
@@ -18,6 +19,7 @@ type Props = {
   health: number;
   isAnalyzingScreenshot: boolean;
   language: Language;
+  selectedHabitTrackId?: HabitTrackId;
   screenInsight?: ScreenTimeResult;
   steps: number;
   trackerEntries: TrackerEntry[];
@@ -27,7 +29,6 @@ type Props = {
   onLogOut: () => void;
   onOpenCheckIn: () => void;
   onOpenJournal: () => void;
-  onRestartOnboarding: () => void;
 };
 
 export function Dashboard({
@@ -37,6 +38,7 @@ export function Dashboard({
   health,
   isAnalyzingScreenshot,
   language,
+  selectedHabitTrackId,
   screenInsight,
   steps,
   trackerEntries,
@@ -46,7 +48,6 @@ export function Dashboard({
   onLogOut,
   onOpenCheckIn,
   onOpenJournal,
-  onRestartOnboarding,
 }: Props) {
   const t = text[language];
 
@@ -85,9 +86,6 @@ export function Dashboard({
             <button className="secondary-button" onClick={onOpenCheckIn} type="button">
               {t.checkIn}
             </button>
-            <button className="secondary-button" onClick={onRestartOnboarding} type="button">
-              {t.start}
-            </button>
             <button className="secondary-button" onClick={onOpenJournal} type="button">
               {t.journal}
             </button>
@@ -95,7 +93,7 @@ export function Dashboard({
           <StepsWidget steps={steps} onChangeSteps={onChangeSteps} />
         </>
       ) : activeTab === 'tracker' ? (
-        <TrackerPanel entries={trackerEntries} language={language} />
+        <TrackerPanel entries={trackerEntries} initialTrackId={selectedHabitTrackId} language={language} />
       ) : activeTab === 'training' ? (
         <TrainingPanel language={language} zone={brainState?.worstZone ?? 'pfc'} />
       ) : activeTab === 'science' ? (

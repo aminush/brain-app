@@ -5,6 +5,7 @@ import {
   type Symptom,
   calculateCheckInState,
 } from '../lib/brainLogic';
+import type { HabitTrackId } from '../lib/habitTracks';
 import type { ScreenTimeResult } from '../lib/screenTimeAi';
 import { getTodayKey, saveTrackerEntry } from '../lib/tracker';
 
@@ -12,6 +13,7 @@ type CheckInInput = {
   appTypes: AppCategory[];
   screenTime: number;
   screenInsight?: ScreenTimeResult;
+  selectedHabitTrackId?: HabitTrackId;
   sleepHours: number;
   steps?: number;
   symptoms: Symptom[];

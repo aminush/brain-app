@@ -15,6 +15,7 @@ export function buildWeeklyReport(entries: TrackerEntry[]) {
     previousFocus: average(previous.map((item) => item.health)),
     previousScreen: average(previous.map((item) => item.screenTime)),
     previousSleep: average(previous.map((item) => item.sleepHours)),
+    totalSteps: entries.reduce((sum, item) => sum + item.steps, 0),
     totalScreenTime: entries.reduce((sum, item) => sum + item.screenTime, 0),
   };
 }

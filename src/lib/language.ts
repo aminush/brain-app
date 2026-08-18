@@ -27,7 +27,7 @@ const text = {
     signup: 'Sign up',
     start: 'Start reboot',
     tracker: 'Tracker',
-    training: 'Training',
+    training: 'Exercises',
     weakZone: 'Vulnerable zone',
   },
   рус: {
@@ -54,7 +54,7 @@ const text = {
     signup: 'Регистрация',
     start: 'Start reboot',
     tracker: 'Трекер',
-    training: 'Задания',
+    training: 'Exercises',
     weakZone: 'Уязвимая зона',
   },
 } satisfies Record<Language, Record<string, string>>;

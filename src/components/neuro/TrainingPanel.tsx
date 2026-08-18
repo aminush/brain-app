@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
 import type { Language } from '../../lib/language';
+import { BreathTrainer } from './BreathTrainer';
 import { ReplaceScrollPanel } from './ReplaceScrollPanel';
-import { getBreathCopy, getMemoryCopy } from './trainingCopy';
+import { getMemoryCopy } from './trainingCopy';
 
 const colors = [
   { name: 'КРАСНЫЙ', value: '#ff0055' },
@@ -17,8 +18,18 @@ type Props = {
 };
 
 export function TrainingPanel({ language, zone }: Props) {
+  const zoneExercise = getZoneExercise(zone, language);
+
+  return (
+    <div className="exercises-stack">
+      <BreathTrainer language={language} />
+      {zoneExercise}
+    </div>
+  );
+}
+
+function getZoneExercise(zone: BrainZone, language: Language) {
   if (zone === 'hippocampus') return <MemoryGrid language={language} />;
-  if (zone === 'amygdala') return <BreathTrainer language={language} />;
   if (zone === 'limbic') return <ReplaceScrollPanel language={language} />;
   return <StroopTest language={language} />;
 }
@@ -124,18 +135,6 @@ function MemoryGrid({ language }: { language: Language }) {
       </div>
       <p>{status}</p>
       <button className="primary-action" onClick={start} type="button">{copy.start}</button>
-    </section>
-  );
-}
-
-function BreathTrainer({ language }: { language: Language }) {
-  const copy = getBreathCopy(language);
-  return (
-    <section className="training-panel">
-      <p className="eyebrow">{copy.zone}</p>
-      <h2>{copy.title}</h2>
-      <div className="breath-box"><span>4</span><span>4</span><span>4</span><span>4</span></div>
-      <p>{copy.text}</p>
     </section>
   );
 }

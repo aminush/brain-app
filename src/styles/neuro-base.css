@@ -22,6 +22,7 @@ button { font-family: inherit; }
 
 .manifest,
 .setup-panel,
+.overview-panel,
 .brain-card,
 .placeholder-panel,
 .rescue-modal,
@@ -35,7 +36,8 @@ button { font-family: inherit; }
 }
 
 .manifest,
-.setup-panel {
+.setup-panel,
+.overview-panel {
   max-width: 620px;
   padding: 30px;
 }
@@ -50,6 +52,7 @@ button { font-family: inherit; }
 }
 
 .manifest h1,
+.overview-panel h1,
 .setup-panel h1 {
   max-width: 560px;
   margin-bottom: 16px;
@@ -58,12 +61,37 @@ button { font-family: inherit; }
 }
 
 .manifest p,
+.overview-panel p,
 .setup-panel p,
 .placeholder-panel p,
 .result-modal p,
 .task-text {
   color: #c7d2fe;
   line-height: 1.55;
+}
+
+.overview-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.overview-grid article {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 4px 12px;
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.overview-grid span {
+  grid-row: span 2;
+  font-size: 26px;
+}
+
+.overview-grid h2 {
+  font-size: 18px;
 }
 
 .primary-action,
