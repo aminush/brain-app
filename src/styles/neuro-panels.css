@@ -102,14 +102,13 @@
   font-size: 28px;
 }
 
-.breathing-circle.inhale,
-.breathing-circle.hold {
+.breathing-circle.expanded {
   transform: scale(1);
   opacity: 1;
   box-shadow: 0 0 52px rgba(56, 189, 248, 0.88), inset 0 0 42px rgba(186, 230, 253, 0.55);
 }
 
-.breathing-circle.exhale {
+.breathing-circle.contracted {
   transform: scale(0.76);
   opacity: 0.48;
   box-shadow: 0 0 14px rgba(56, 189, 248, 0.28), inset 0 0 16px rgba(186, 230, 253, 0.18);

@@ -101,16 +101,21 @@ export function BreathTrainer({ language }: Props) {
 function ActiveBreathing({ exercise }: { exercise: BreathExercise }) {
   const duration = exercise.phases.reduce((total, phase) => total + phase.seconds, 0);
   const [phaseIndex, setPhaseIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
   const activePhase = exercise.phases[phaseIndex];
-  const phaseKind = activePhase.label.toLowerCase().includes('inhale') || activePhase.label.toLowerCase().includes('вдох')
-    ? 'inhale'
-    : activePhase.label.toLowerCase().includes('hold') || activePhase.label.toLowerCase().includes('задерж')
-      ? 'hold'
-      : 'exhale';
+  const phaseKind = getPhaseKind(activePhase.label);
+  const previousIndex = (phaseIndex - 1 + exercise.phases.length) % exercise.phases.length;
+  const previousKind = getPhaseKind(exercise.phases[previousIndex].label);
+  const circleState = phaseKind === 'inhale'
+    ? (isAnimating ? 'expanded' : 'contracted')
+    : phaseKind === 'exhale' || previousKind === 'exhale' ? 'contracted' : 'expanded';
   const animationStyle = { '--phase-duration': `${activePhase.seconds}s` } as CSSProperties;
 
   useEffect(() => {
     setPhaseIndex(0);
+    setIsAnimating(false);
+    const frame = window.requestAnimationFrame(() => setIsAnimating(true));
+    return () => window.cancelAnimationFrame(frame);
   }, [exercise.id]);
 
   useEffect(() => {
@@ -122,7 +127,7 @@ function ActiveBreathing({ exercise }: { exercise: BreathExercise }) {
 
   return (
     <div className="active-breathing">
-      <div className={`breathing-circle ${phaseKind}`} style={animationStyle} aria-live="polite">
+      <div className={`breathing-circle ${circleState}`} style={animationStyle} aria-live="polite">
         <span>{activePhase.label}</span>
         <strong>{activePhase.seconds}</strong>
       </div>
@@ -137,4 +142,11 @@ function ActiveBreathing({ exercise }: { exercise: BreathExercise }) {
       <p className="breath-cycle-text">{exercise.cycleText} · {duration}s</p>
     </div>
   );
+}
+
+function getPhaseKind(label: string) {
+  const normalized = label.toLowerCase();
+  if (normalized.includes('inhale') || normalized.includes('вдох')) return 'inhale';
+  if (normalized.includes('hold') || normalized.includes('задерж')) return 'hold';
+  return 'exhale';
 }
