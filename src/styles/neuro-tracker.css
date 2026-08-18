@@ -1,4 +1,6 @@
-.tracker-panel {
+.habit-panel {
+  display: grid;
+  gap: 18px;
   padding: 24px;
   border: 1px solid rgba(99, 102, 241, 0.34);
   border-radius: 8px;
@@ -6,124 +8,184 @@
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
 }
 
-.tracker-panel p {
-  color: #c7d2fe;
-  line-height: 1.5;
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
 }
 
-.tracker-summary {
+.habit-header h2 { font-size: 28px; }
+.habit-header strong { color: #ffffff; white-space: nowrap; }
+
+.habit-track-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 18px 0;
+  grid-auto-columns: minmax(210px, 250px);
+  grid-auto-flow: column;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
-.tracker-summary div,
-.day-detail,
-.week-day,
-.weekly-story {
-  padding: 14px;
-  border: 1px solid transparent;
+.habit-track-card {
+  --track-color: #38bdf8;
+  display: grid;
+  gap: 8px;
+  min-height: 188px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--track-color) 38%, transparent);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.tracker-summary span,
-.tracker-bar small {
-  color: #c7d2fe;
-}
-
-.tracker-summary strong {
-  display: block;
-  margin-top: 4px;
-  color: #ffffff;
-}
-
-.week-grid {
-  display: grid;
-  gap: 10px;
-}
-
-.week-day {
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 10px;
-  align-items: center;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--track-color) 22%, #111827), rgba(255, 255, 255, 0.05));
+  box-shadow: none;
   color: #eef2ff;
   text-align: left;
 }
 
-.week-day.active {
-  border-color: rgba(56, 189, 248, 0.72);
-  background: rgba(56, 189, 248, 0.14);
+.habit-track-card.active {
+  border-color: var(--track-color);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--track-color) 42%, transparent);
 }
 
-.week-day:disabled {
-  cursor: default;
-  opacity: 0.55;
-}
+.habit-track-emoji { font-size: 32px; }
+.habit-track-card strong { font-size: 20px; }
+.habit-track-card > span:not(.habit-track-emoji) { color: #dbeafe; font-size: 13px; line-height: 1.35; }
 
-.week-day > span {
-  color: #38bdf8;
-  font-weight: 800;
-  text-transform: capitalize;
-}
-
-.tracker-bar {
+.habit-progress-line {
   display: grid;
-  grid-template-columns: 54px 1fr;
-  gap: 8px;
-  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  color: #ffffff;
+  font-size: 13px;
 }
 
-.tracker-bar span {
+.habit-progress-line i {
   height: 8px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(129, 140, 248, 0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.tracker-bar i {
+.habit-progress-line b {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #6366f1, #38bdf8);
+  background: #ffffff;
+  transition: width 0.35s ease;
 }
 
-.day-detail,
-.weekly-story {
+.habit-detail-layout {
   display: grid;
-  gap: 8px;
-  margin: 18px 0;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(300px, 1.1fr);
+  gap: 16px;
 }
 
-.day-detail p {
+.habit-track-detail,
+.daily-action-card {
+  padding: 18px;
+  border: 1px solid rgba(129, 140, 248, 0.26);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.habit-track-detail p,
+.daily-task p,
+.habit-detail-text {
+  color: #c7d2fe;
+  line-height: 1.5;
+}
+
+.habit-timeline {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.habit-day-dot {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 10px;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+  text-align: left;
+}
+
+.habit-day-dot span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(129, 140, 248, 0.26);
+}
+
+.habit-day-dot.current { border: 1px solid rgba(56, 189, 248, 0.72); }
+.habit-day-dot.complete span { background: #22c55e; }
+.habit-day-dot.locked { opacity: 0.5; }
+
+.daily-action-card {
+  display: grid;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.habit-detail-layout.celebrating .daily-action-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.24), transparent);
+  animation: habitCelebrate 0.62s ease;
+  pointer-events: none;
+}
+
+.daily-card-top {
+  display: flex;
   gap: 12px;
-  margin: 0;
+  align-items: center;
 }
 
-.day-detail em {
-  color: #00ff88;
-  font-style: normal;
-  font-weight: 800;
+.daily-card-top > span {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 24px;
 }
 
-.weekly-story {
-  background: rgba(56, 189, 248, 0.09);
+.daily-card-top p,
+.daily-task span { color: #93c5fd; font-size: 13px; font-weight: 800; }
+.daily-card-top h3 { font-size: 26px; }
+
+.daily-task,
+.habit-detail-text {
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.weekly-story p {
-  margin: 0;
+.detail-toggle {
+  display: flex;
+  justify-content: space-between;
+  box-shadow: none;
+  background: rgba(15, 23, 42, 0.72);
 }
 
-.weekly-story strong {
-  color: #ffffff;
+.complete-day-button {
+  min-height: 56px;
 }
 
-@media (max-width: 620px) {
-  .tracker-summary {
-    grid-template-columns: 1fr;
-  }
+@keyframes habitCelebrate {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@media (max-width: 760px) {
+  .habit-panel { padding: 18px; }
+  .habit-header { display: grid; }
+  .habit-header strong { white-space: normal; }
+  .habit-detail-layout { grid-template-columns: 1fr; }
 }
