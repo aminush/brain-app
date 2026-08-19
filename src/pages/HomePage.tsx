@@ -40,11 +40,17 @@ function HomeContent() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) openAppAfterAuth(Boolean(profile), false);
+      if (!data.session) return;
+      if (profile) {
+        openAppAfterAuth(true, false);
+        return;
+      }
+      setIsOnboardingQuiz(true);
     });
 
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) openAppAfterAuth(Boolean(profile), event === 'SIGNED_IN');
+      if (!session || event !== 'SIGNED_IN' || !profile) return;
+      openAppAfterAuth(true, true);
     });
 
     return () => data.subscription.unsubscribe();

@@ -1,8 +1,10 @@
 .landing-shell {
+  width: 100%;
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .landing-frame {
@@ -82,7 +84,7 @@
   max-width: 440px;
   margin-bottom: 18px;
   font-size: clamp(34px, 5vw, 60px);
-  line-height: 0.98;
+  line-height: 1.02;
 }
 
 .landing-copy p {
@@ -97,12 +99,85 @@
 }
 
 @media (max-width: 760px) {
-  .landing-frame { min-height: 720px; }
-  .landing-topbar { padding: 22px; flex-wrap: wrap; }
-  .language-switch { margin-left: 0; }
-  .auth-corner { margin-left: auto; }
+  .landing-frame {
+    min-height: 100svh;
+    background:
+      radial-gradient(circle at 86% 58%, rgba(56, 189, 248, 0.2), transparent 24%),
+      radial-gradient(circle at 70% 88%, rgba(99, 102, 241, 0.36), transparent 32%),
+      linear-gradient(180deg, rgba(88, 96, 219, 0.92) 0 58%, rgba(4, 5, 10, 0.98) 58% 100%);
+  }
+
+  .landing-topbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px 12px;
+    align-items: center;
+    padding: max(18px, env(safe-area-inset-top)) 16px 18px;
+  }
+
+  .brand-mark {
+    font-size: 30px;
+  }
+
+  .language-switch {
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .language-button {
+    min-width: 58px;
+    height: 40px;
+    padding: 0 10px;
+  }
+
+  .auth-corner {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .auth-nav-button {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 0 12px;
+  }
+
   .landing-copy {
-    width: min(76%, 455px);
-    margin: 54px 24px 0;
+    width: auto;
+    max-width: 430px;
+    margin: clamp(48px, 8vh, 86px) 16px 0;
+  }
+
+  .landing-copy h1 {
+    max-width: 360px;
+    font-size: clamp(38px, 12vw, 52px);
+  }
+
+  .landing-copy p {
+    max-width: 340px;
+    font-size: 18px;
+  }
+
+  .start-button {
+    width: min(100%, 330px);
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-mark {
+    font-size: 26px;
+  }
+
+  .language-button {
+    min-width: 52px;
+    font-size: 12px;
+  }
+
+  .landing-copy h1 {
+    font-size: 36px;
   }
 }
