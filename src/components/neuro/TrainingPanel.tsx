@@ -1,16 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
 import type { Language } from '../../lib/language';
 import { BreathTrainer } from './BreathTrainer';
 import { FillYourCupWidget } from './FillYourCupWidget';
 import { getMemoryCopy } from './trainingCopy';
-
-const colors = [
-  { name: 'КРАСНЫЙ', value: '#ff0055' },
-  { name: 'СИНИЙ', value: '#00f0ff' },
-  { name: 'ЖЁЛТЫЙ', value: '#ffd700' },
-  { name: 'ЗЕЛЁНЫЙ', value: '#00ff88' },
-];
 
 type Props = {
   language: Language;
@@ -18,75 +11,12 @@ type Props = {
 };
 
 export function TrainingPanel({ language, zone }: Props) {
-  const zoneExercise = getZoneExercise(zone, language);
-
   return (
     <div className="exercises-stack">
       <FillYourCupWidget />
       <BreathTrainer language={language} />
-      {zoneExercise}
+      {zone === 'hippocampus' && <MemoryGrid language={language} />}
     </div>
-  );
-}
-
-function getZoneExercise(zone: BrainZone, language: Language) {
-  if (zone === 'hippocampus') return <MemoryGrid language={language} />;
-  return <StroopTest language={language} />;
-}
-
-function StroopTest({ language }: { language: Language }) {
-  const [round, setRound] = useState(() => createRound());
-  const [score, setScore] = useState(0);
-  const copy = language === 'eng'
-    ? {
-        feedback: 'Choose the ink color, not the word.',
-        late: 'Too slow. New round.',
-        no: 'The brain followed the word',
-        score: 'Score',
-        title: 'Stroop test',
-        yes: 'Correct',
-      }
-    : {
-        feedback: 'Выбери цвет краски, не слово.',
-        late: 'Слишком долго. Новый раунд.',
-        no: 'Мозг повёлся на слово',
-        score: 'Очки',
-        title: 'Тест Струпа',
-        yes: 'Верно',
-      };
-  const [feedback, setFeedback] = useState(copy.feedback);
-
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      setFeedback(copy.late);
-      setRound(createRound());
-    }, 2000);
-    return () => window.clearTimeout(id);
-  }, [copy.late, round]);
-
-  function answer(value: string) {
-    const ok = value === round.ink.value;
-    setScore((current) => ok ? current + 1 : Math.max(0, current - 1));
-    setFeedback(ok ? copy.yes : copy.no);
-    navigator.vibrate?.(ok ? 35 : [20, 40, 20]);
-    setRound(createRound());
-  }
-
-  return (
-    <section className="training-panel">
-      <p className="eyebrow">{language === 'eng' ? 'PFC training' : 'Тренировка ПФК'}</p>
-      <h2>{copy.title}</h2>
-      <div className="score-line">{copy.score}: {score}</div>
-      <div className="stroop-word" style={{ color: round.ink.value }}>{round.word.name}</div>
-      <div className="stroop-buttons">
-        {colors.map((color) => (
-          <button key={color.name} onClick={() => answer(color.value)} style={{ borderColor: color.value }} type="button">
-            {color.name}
-          </button>
-        ))}
-      </div>
-      <p>{feedback}</p>
-    </section>
   );
 }
 
@@ -137,13 +67,6 @@ function MemoryGrid({ language }: { language: Language }) {
       <button className="primary-action" onClick={start} type="button">{copy.start}</button>
     </section>
   );
-}
-
-function createRound() {
-  const word = colors[Math.floor(Math.random() * colors.length)];
-  let ink = colors[Math.floor(Math.random() * colors.length)];
-  if (ink.name === word.name) ink = colors[(colors.indexOf(ink) + 1) % colors.length];
-  return { ink, word };
 }
 
 function shuffle(items: number[]) {
