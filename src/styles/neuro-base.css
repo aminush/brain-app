@@ -94,6 +94,25 @@ button { font-family: inherit; }
   font-size: 18px;
 }
 
+.overview-grid ul {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overview-grid li {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .primary-action,
 .rescue-button,
 .secondary-button,

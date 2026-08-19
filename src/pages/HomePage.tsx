@@ -17,6 +17,8 @@ import { loadTrackerEntries } from '../lib/tracker';
 import type { Tab } from '../components/neuro/types';
 import '../styles/neuro.css';
 
+const appTourKey = 'synap.hasSeenAppTour';
+
 export function HomePage() {
   return <BrainStateProvider><NeuroXpProvider><HomeContent /></NeuroXpProvider></BrainStateProvider>;
 }
@@ -38,11 +40,11 @@ function HomeContent() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) openAppAfterAuth(Boolean(profile));
+      if (data.session) openAppAfterAuth(Boolean(profile), false);
     });
 
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) openAppAfterAuth(Boolean(profile));
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) openAppAfterAuth(Boolean(profile), event === 'SIGNED_IN');
     });
 
     return () => data.subscription.unsubscribe();
@@ -66,6 +68,10 @@ function HomeContent() {
   };
 
   const finishAuth = () => {
+    if (profile) {
+      openAppAfterAuth(true, true);
+      return;
+    }
     if (!plannedInput) {
       setIsOnboardingQuiz(true);
       return;
@@ -85,10 +91,11 @@ function HomeContent() {
     }
   };
 
-  const openAppAfterAuth = (hasProfile: boolean) => {
+  const openAppAfterAuth = (hasProfile: boolean, showTour: boolean) => {
     if (hasProfile) {
       setIsCheckingIn(false);
       setIsReady(true);
+      if (showTour && !localStorage.getItem(appTourKey)) setIsOverviewOpen(true);
       return;
     }
     setIsOnboardingQuiz(true);
@@ -123,7 +130,10 @@ function HomeContent() {
   }
 
   if (isOverviewOpen) {
-    return <AppOverview language={language} onContinue={() => setIsOverviewOpen(false)} />;
+    return <AppOverview language={language} onContinue={() => {
+      localStorage.setItem(appTourKey, 'true');
+      setIsOverviewOpen(false);
+    }} />;
   }
 
   if (!isReady) {
