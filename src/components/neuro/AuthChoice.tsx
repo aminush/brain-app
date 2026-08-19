@@ -17,7 +17,7 @@ export function AuthChoice({ language, onBack, onSelect }: Props) {
           {t.back}
         </button>
         <div className="auth-card">
-          <p className="eyebrow">Neuro access</p>
+          <p className="eyebrow">{t.neuroAccess}</p>
           <h1>{t.authChoiceTitle}</h1>
           <p className="auth-message">{t.authChoiceText}</p>
           <div className="auth-choice">

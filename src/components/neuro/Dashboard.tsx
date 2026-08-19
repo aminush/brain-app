@@ -7,6 +7,7 @@ import { TrainingPanel } from './TrainingPanel';
 import { TrackerPanel } from './TrackerPanel';
 import type { BrainState } from '../../lib/brainLogic';
 import type { HabitTrackId } from '../../lib/habitTracks';
+import { getBrainStateTitle } from '../../lib/brainStateTitle';
 import { text, type Language } from '../../lib/language';
 import type { ScreenTimeResult } from '../../lib/screenTimeAi';
 import type { TrackerEntry } from '../../lib/tracker';
@@ -57,8 +58,12 @@ export function Dashboard({
     <main className="neuro-shell dashboard">
       <header className="top-bar">
         <div>
-          <p>Амина</p>
-          <h1>{activeTab === 'home' ? t.homeTitle : tabTitle(activeTab, language)}</h1>
+          <p>SYNAP</p>
+          <h1>
+            {activeTab === 'home'
+              ? getBrainStateTitle(brainState?.health ?? health, language)
+              : tabTitle(activeTab, language)}
+          </h1>
         </div>
         <div className="top-actions">
           <div className="xp-badge" title="Neuro-XP">
@@ -96,7 +101,7 @@ export function Dashboard({
               {t.journal}
             </button>
           </div>
-          <StepsWidget steps={steps} onChangeSteps={onChangeSteps} />
+          <StepsWidget language={language} steps={steps} onChangeSteps={onChangeSteps} />
         </>
       ) : activeTab === 'tracker' ? (
         <TrackerPanel entries={trackerEntries} initialTrackId={selectedHabitTrackId} language={language} />

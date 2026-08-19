@@ -33,7 +33,7 @@ export function CheckInScreen({ language, onComplete }: Props) {
   return (
     <main className="neuro-shell checkin-shell">
       <section className="checkin-panel">
-        <p className="eyebrow">Daily check-in</p>
+        <p className="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.brainTitle}</h1>
         <OptionRow options={localizeMoods(language)} selected={mood} onSelect={setMood} />
 

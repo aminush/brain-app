@@ -43,6 +43,7 @@ export function localizeScroll(language: Language) {
 const en = {
   brainTitle: "How's your brain today?",
   done: 'Done →',
+  eyebrow: 'Daily check-in',
   hours: 'Hours',
   minutes: 'Minutes',
   screenTitle: 'Screen time yesterday',
@@ -54,6 +55,7 @@ const en = {
 const ru = {
   brainTitle: 'Как мозг сегодня?',
   done: 'Готово →',
+  eyebrow: 'Ежедневный чек-ин',
   hours: 'Часы',
   minutes: 'Минуты',
   screenTitle: 'Экранное время вчера',

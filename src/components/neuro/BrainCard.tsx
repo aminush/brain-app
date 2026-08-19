@@ -1,4 +1,6 @@
 import { calculateCheckInState, type BrainState } from '../../lib/brainLogic';
+import { getBrainVerdict, getZoneName } from '../../lib/brainCopy';
+import { getBrainStateTitle } from '../../lib/brainStateTitle';
 import { text, type Language } from '../../lib/language';
 import { BrainMap } from './BrainMap';
 
@@ -15,11 +17,11 @@ export function BrainCard({ focusMinutes, health, language, state }: Props) {
 
   return (
     <section className="brain-card">
-      <BrainMap state={brainState} />
+      <BrainMap language={language} state={brainState} />
       <div className="brain-details">
         <div className="brain-copy">
           <p className="eyebrow">{t.brainCondition}</p>
-          <h2>{t.pfc}</h2>
+          <h2>{getBrainStateTitle(brainState.health, language)}</h2>
         </div>
         <div className="metric-line">
           <span>{t.health}</span>
@@ -35,16 +37,18 @@ export function BrainCard({ focusMinutes, health, language, state }: Props) {
           </div>
           <div>
             <span>{t.mode}</span>
-            <strong>Reboot</strong>
+            <strong>{t.modeReboot}</strong>
           </div>
           <div>
             <span>{t.weakZone}</span>
-            <strong>{brainState.zones[brainState.worstZone].label}</strong>
+            <strong>{getZoneName(brainState.worstZone, language)}</strong>
           </div>
         </div>
-        <p className="brain-verdict">{brainState.verdict}</p>
+        <p className="brain-verdict">{getBrainVerdict(brainState.worstZone, language)}</p>
         <p className="synap-note">
-          Synap Index — an app-generated score based on your tracked habits. Not a medical measurement.
+          {language === 'eng'
+            ? 'Synap Index is an app-generated score based on your tracked habits. Not a medical measurement.'
+            : 'Synap Index — оценка приложения на основе твоих привычек. Это не медицинский показатель.'}
         </p>
       </div>
     </section>

@@ -1,21 +1,24 @@
 import { useState } from 'react';
+import type { Language } from '../../lib/language';
 import { readTodaySteps } from '../../lib/pedometer';
 
 const stepGoal = 6000;
 
 type Props = {
+  language: Language;
   onChangeSteps: (steps: number) => void;
   steps: number;
 };
 
-export function StepsWidget({ onChangeSteps, steps }: Props) {
-  const [message, setMessage] = useState('Цель на сегодня: 6 000 шагов.');
+export function StepsWidget({ language, onChangeSteps, steps }: Props) {
+  const copy = language === 'eng' ? en : ru;
+  const [message, setMessage] = useState(copy.goal);
   const [isReading, setIsReading] = useState(false);
   const progress = Math.min(100, Math.round((steps / stepGoal) * 100));
 
   async function syncSteps() {
     setIsReading(true);
-    const result = await readTodaySteps();
+    const result = await readTodaySteps(language);
     if (result.steps > 0) onChangeSteps(result.steps);
     setMessage(result.message);
     setIsReading(false);
@@ -24,8 +27,8 @@ export function StepsWidget({ onChangeSteps, steps }: Props) {
   return (
     <section className="steps-widget">
       <div className="metric-line">
-        <span>Шаги</span>
-        <strong>{steps.toLocaleString('ru-RU')} / 6 000</strong>
+        <span>{copy.steps}</span>
+        <strong>{steps.toLocaleString(language === 'eng' ? 'en-US' : 'ru-RU')} / 6 000</strong>
       </div>
       <div className="progress-track steps-track">
         <div className="progress-fill steps-fill" style={{ width: `${progress}%` }} />
@@ -33,10 +36,10 @@ export function StepsWidget({ onChangeSteps, steps }: Props) {
       <p className="hint">{message}</p>
       <div className="steps-actions">
         <button className="secondary-button" disabled={isReading} onClick={syncSteps} type="button">
-          {isReading ? 'Считываю шаги...' : 'Считать шаги'}
+          {isReading ? copy.reading : copy.read}
         </button>
         <label className="steps-input">
-          <span>Ввести вручную</span>
+          <span>{copy.manual}</span>
           <input
             min={0}
             onChange={(event) => onChangeSteps(Number(event.target.value))}
@@ -48,3 +51,19 @@ export function StepsWidget({ onChangeSteps, steps }: Props) {
     </section>
   );
 }
+
+const en = {
+  goal: 'Goal for today: 6,000 steps.',
+  manual: 'Enter manually',
+  read: 'Read steps',
+  reading: 'Reading steps...',
+  steps: 'Steps',
+};
+
+const ru = {
+  goal: 'Цель на сегодня: 6 000 шагов.',
+  manual: 'Ввести вручную',
+  read: 'Считать шаги',
+  reading: 'Считываю шаги...',
+  steps: 'Шаги',
+};

@@ -13,7 +13,7 @@ type Props = {
 export function TrainingPanel({ language, zone }: Props) {
   return (
     <div className="exercises-stack">
-      <FillYourCupWidget />
+      <FillYourCupWidget language={language} />
       <BreathTrainer language={language} />
       {zone === 'hippocampus' && <MemoryGrid language={language} />}
     </div>
@@ -54,7 +54,7 @@ function MemoryGrid({ language }: { language: Language }) {
 
   return (
     <section className="training-panel">
-      <p className="eyebrow">Гиппокамп</p>
+      <p className="eyebrow">{language === 'eng' ? 'Hippocampus' : 'Гиппокамп'}</p>
       <h2>{copy.title}</h2>
       <div className="memory-grid">
         {Array.from({ length: 9 }, (_, cell) => (

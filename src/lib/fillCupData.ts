@@ -56,6 +56,51 @@ export const CUPS: CupConfig[] = [
   },
 ];
 
+const groundingEn = [
+  quest('water', 'Drink a glass of water without holding your phone. Look out the window for 2 minutes.', 'Amygdala / Detox'),
+  quest('blue', 'Find 5 blue objects around you and name them.', 'Hippocampus / Grounding'),
+];
+
+const creativeEn = [
+  quest('ideas', 'Sketch 3 quick ideas on paper in 120 seconds.', 'PFC / Creativity'),
+  quest('song', 'Play a favorite track from start to finish without multitasking.', 'Limbic system'),
+];
+
+const physicalEn = [
+  quest('squats', 'Do 15 squats or a light stretch.', 'Physical dopamine'),
+];
+
+const CUPS_EN: CupConfig[] = [
+  { id: 'classic', name: 'Classic Blue', reward: 75, unlockXP: 0, sprite: 0, quests: groundingEn },
+  { id: 'cosmic', name: 'Cosmic Cup', reward: 75, unlockXP: 0, sprite: 5, quests: creativeEn },
+  { id: 'striped', name: 'Striped Cup', reward: 75, unlockXP: 0, sprite: 2, quests: physicalEn },
+  {
+    id: 'gold', name: 'Golden Flow Cup', reward: 75, unlockXP: 150, sprite: 1,
+    quests: [
+      quest('read', 'Read for 10 minutes without devices or notifications.', 'PFC / Deep focus'),
+      quest('plan', 'Write your day plan on paper and choose one main next step.', 'PFC / Planning'),
+    ],
+  },
+  {
+    id: 'cyber', name: 'Neon Cyber Cup', reward: 75, unlockXP: 300, sprite: 4,
+    quests: [
+      quest('walk', 'Walk for 15 minutes without your phone or headphones.', 'Limbic system / Detox'),
+      quest('ground-54321', 'Name 5 things you see, 4 sensations, 3 sounds, 2 smells and 1 taste.', 'Amygdala / 5-4-3-2-1'),
+    ],
+  },
+  {
+    id: 'galaxy', name: 'Mystery Galaxy Cup', reward: 150, unlockXP: 500, sprite: 3,
+    quests: [
+      quest('silence', 'Spend 20 minutes in silence and write down one important thought.', 'Rare quest / Clarity'),
+      quest('memory-map', 'Draw from memory a map of places you visited today.', 'Rare quest / Hippocampus'),
+    ],
+  },
+];
+
+export function getCups(language: 'eng' | 'рус') {
+  return language === 'eng' ? CUPS_EN : CUPS;
+}
+
 function quest(id: string, text: string, zone: string): CupQuest {
   return { id, text, zone };
 }

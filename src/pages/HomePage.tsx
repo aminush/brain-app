@@ -77,7 +77,7 @@ function HomeContent() {
   const analyzeScreenshot = async (file: File) => {
     setIsAnalyzingScreenshot(true);
     try {
-      const result = await analyzeScreenTimeImage(file);
+      const result = await analyzeScreenTimeImage(file, language);
       const state = saveCheckIn(createScreenshotCheckInInput(profile?.input, result));
       applyBrainState(state.health);
     } finally {
@@ -153,7 +153,7 @@ function HomeContent() {
         onOpenJournal={() => setIsJournalOpen(true)}
       />
       <BottomTabs activeTab={activeTab} language={language} onChange={setActiveTab} />
-      <JournalModal isOpen={isJournalOpen} onClose={() => setIsJournalOpen(false)} />
+      <JournalModal isOpen={isJournalOpen} language={language} onClose={() => setIsJournalOpen(false)} />
     </>
   );
 }

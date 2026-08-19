@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Language } from '../../lib/language';
+import { text, type Language } from '../../lib/language';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 
 type AuthMode = 'login' | 'signup';
@@ -18,6 +18,7 @@ export function AuthPanel({ language, mode, onBack, onSuccess }: Props) {
   const [busy, setBusy] = useState(false);
 
   const copy = language === 'eng' ? en : ru;
+  const t = text[language];
   const title = mode === 'login' ? copy.login : copy.signup;
   const googleTitle = mode === 'login' ? copy.googleLogin : copy.googleSignup;
 
@@ -79,7 +80,7 @@ export function AuthPanel({ language, mode, onBack, onSuccess }: Props) {
           {copy.back}
         </button>
         <div className="auth-card">
-          <p className="eyebrow">Neuro access</p>
+          <p className="eyebrow">{t.neuroAccess}</p>
           <h1>{title}</h1>
           <form className="auth-form" onSubmit={handleSubmit}>
             <input

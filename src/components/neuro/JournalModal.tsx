@@ -1,19 +1,15 @@
 import { useState } from 'react';
-
-const steps = [
-  { count: 5, label: 'вещей, которые видишь' },
-  { count: 4, label: 'ощущения, которые чувствуешь телом' },
-  { count: 3, label: 'звука вокруг' },
-  { count: 2, label: 'запаха или вкуса' },
-  { count: 1, label: 'глубокий вдох' },
-];
+import type { Language } from '../../lib/language';
 
 type Props = {
   isOpen: boolean;
+  language: Language;
   onClose: () => void;
 };
 
-export function JournalModal({ isOpen, onClose }: Props) {
+export function JournalModal({ isOpen, language, onClose }: Props) {
+  const copy = journalCopy[language];
+  const steps = copy.steps;
   const [step, setStep] = useState(0);
   const [notes, setNotes] = useState<string[]>(Array(steps.length).fill(''));
   if (!isOpen) return null;
@@ -24,7 +20,7 @@ export function JournalModal({ isOpen, onClose }: Props) {
   return (
     <div className="modal-backdrop">
       <section className="grounding-modal">
-        <p className="eyebrow">Метод 5-4-3-2-1</p>
+        <p className="eyebrow">{copy.eyebrow}</p>
         <h2>{current.count} {current.label}</h2>
         <div className="grounding-progress">
           {steps.map((item, index) => (
@@ -33,7 +29,7 @@ export function JournalModal({ isOpen, onClose }: Props) {
         </div>
         <textarea
           onChange={(event) => setNotes(updateNote(notes, step, event.target.value))}
-          placeholder="Напиши здесь..."
+          placeholder={copy.placeholder}
           value={notes[step]}
         />
         <button
@@ -48,7 +44,7 @@ export function JournalModal({ isOpen, onClose }: Props) {
           }}
           type="button"
         >
-          {isDone ? 'Завершить' : 'Дальше'}
+          {isDone ? copy.finish : copy.next}
         </button>
       </section>
     </div>
@@ -58,3 +54,38 @@ export function JournalModal({ isOpen, onClose }: Props) {
 function updateNote(notes: string[], index: number, value: string) {
   return notes.map((note, noteIndex) => noteIndex === index ? value : note);
 }
+
+const journalCopy = {
+  eng: {
+    eyebrow: '5-4-3-2-1 method',
+    finish: 'Finish',
+    next: 'Next',
+    placeholder: 'Write here...',
+    steps: [
+      { count: 5, label: 'things you can see' },
+      { count: 4, label: 'body sensations you can feel' },
+      { count: 3, label: 'sounds around you' },
+      { count: 2, label: 'smells or tastes' },
+      { count: 1, label: 'deep breath' },
+    ],
+  },
+  рус: {
+    eyebrow: 'Метод 5-4-3-2-1',
+    finish: 'Завершить',
+    next: 'Дальше',
+    placeholder: 'Напиши здесь...',
+    steps: [
+      { count: 5, label: 'вещей, которые видишь' },
+      { count: 4, label: 'ощущения, которые чувствуешь телом' },
+      { count: 3, label: 'звука вокруг' },
+      { count: 2, label: 'запаха или вкуса' },
+      { count: 1, label: 'глубокий вдох' },
+    ],
+  },
+} satisfies Record<Language, {
+  eyebrow: string;
+  finish: string;
+  next: string;
+  placeholder: string;
+  steps: Array<{ count: number; label: string }>;
+}>;

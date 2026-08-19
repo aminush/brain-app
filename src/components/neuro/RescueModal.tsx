@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+import type { Language } from '../../lib/language';
 
 type Props = {
   isOpen: boolean;
+  language?: Language;
   onComplete: () => void;
   onClose: () => void;
 };
 
-export function RescueModal({ isOpen, onComplete, onClose }: Props) {
+export function RescueModal({ isOpen, language = 'рус', onComplete, onClose }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const drawingRef = useRef(false);
   const [secondsLeft, setSecondsLeft] = useState(60);
+  const copy = language === 'eng' ? en : ru;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -34,15 +37,15 @@ export function RescueModal({ isOpen, onComplete, onClose }: Props) {
       <section className="rescue-modal">
         <header className="modal-header">
           <div>
-            <p className="eyebrow">Активируем моторную кору</p>
-            <h2>Слепой контур</h2>
+            <p className="eyebrow">{copy.eyebrow}</p>
+            <h2>{copy.title}</h2>
           </div>
           <button className="icon-button" onClick={onClose} type="button">×</button>
         </header>
         <p className="task-text">
-          Нарисуй предмет перед собой, не отрывая пальца.
+          {copy.task}
         </p>
-        <div className="timer">{secondsLeft} сек</div>
+        <div className="timer">{secondsLeft} {copy.seconds}</div>
         <canvas
           className="drawing-canvas"
           height="320"
@@ -54,7 +57,7 @@ export function RescueModal({ isOpen, onComplete, onClose }: Props) {
           width="640"
         />
         <button className="primary-action" onClick={onComplete} type="button">
-          Готово
+          {copy.done}
         </button>
       </section>
     </div>
@@ -108,3 +111,19 @@ function getCanvasPoint(event: React.PointerEvent<HTMLCanvasElement>, canvas: HT
     y: ((event.clientY - rect.top) / rect.height) * canvas.height,
   };
 }
+
+const en = {
+  done: 'Done',
+  eyebrow: 'Activating the motor cortex',
+  seconds: 'sec',
+  task: 'Draw an object in front of you without lifting your finger.',
+  title: 'Blind contour',
+};
+
+const ru = {
+  done: 'Готово',
+  eyebrow: 'Активируем моторную кору',
+  seconds: 'сек',
+  task: 'Нарисуй предмет перед собой, не отрывая пальца.',
+  title: 'Слепой контур',
+};

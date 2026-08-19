@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getTrackProgress, loadHabitProgress, toggleDayCompletion } from '../../lib/habitProgress';
-import { HABIT_TRACKS, type HabitTrackId } from '../../lib/habitTracks';
+import { getHabitTracks, type HabitTrackId } from '../../lib/habitTracks';
 import type { Language } from '../../lib/language';
 import type { TrackerEntry } from '../../lib/tracker';
 import { DailyActionCard } from './DailyActionCard';
@@ -17,7 +17,8 @@ type Props = {
 export function TrackerPanel({ entries, initialTrackId, language }: Props) {
   const [progress, setProgress] = useState(() => loadHabitProgress());
   const [activeTrackId, setActiveTrackId] = useState<HabitTrackId>(initialTrackId ?? 'focus');
-  const activeTrack = HABIT_TRACKS.find((track) => track.id === activeTrackId) ?? HABIT_TRACKS[0];
+  const habitTracks = getHabitTracks(language);
+  const activeTrack = habitTracks.find((track) => track.id === activeTrackId) ?? habitTracks[0];
   const activeProgress = getTrackProgress(progress, activeTrack.id);
   const [activeDay, setActiveDay] = useState(activeProgress.currentDay);
   const [celebratingDay, setCelebratingDay] = useState<number | null>(null);
@@ -52,13 +53,14 @@ export function TrackerPanel({ entries, initialTrackId, language }: Props) {
             <p className="eyebrow">{copy.eyebrow}</p>
             <h2>{copy.title}</h2>
           </div>
-          <strong>Current Streak: 🔥 {progress.streak} days</strong>
+          <strong>{copy.streak}: 🔥 {progress.streak} {copy.days}</strong>
         </header>
         <div className="habit-track-list">
-          {HABIT_TRACKS.map((track) => (
+          {habitTracks.map((track) => (
             <HabitTrackCard
               isActive={track.id === activeTrack.id}
               key={track.id}
+              language={language}
               progress={getTrackProgress(progress, track.id)}
               track={track}
               onSelect={() => setActiveTrackId(track.id)}
@@ -79,6 +81,7 @@ export function TrackerPanel({ entries, initialTrackId, language }: Props) {
           <DailyActionCard
             day={day}
             isComplete={activeProgress.completedDays.includes(day.day)}
+            language={language}
             track={activeTrack}
             onComplete={completeDay}
           />
@@ -90,11 +93,15 @@ export function TrackerPanel({ entries, initialTrackId, language }: Props) {
 }
 
 const en = {
+  days: 'days',
   eyebrow: '7-day tracks',
+  streak: 'Current streak',
   title: 'Habit dashboard',
 };
 
 const ru = {
+  days: 'дней',
   eyebrow: '7-дневные треки',
+  streak: 'Текущая серия',
   title: 'Трекер привычек',
 };
