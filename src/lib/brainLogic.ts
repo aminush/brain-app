@@ -89,6 +89,24 @@ export function calculateBrainHealth(
   };
 }
 
+export function healBrainZone(state: BrainState, amount = 15): BrainState {
+  const healedZone = state.worstZone;
+  const damage = Object.fromEntries(
+    Object.entries(state.zones).map(([zone, value]) => [
+      zone,
+      zone === healedZone ? Math.max(0, value.damage - amount) : value.damage,
+    ]),
+  ) as Record<BrainZone, number>;
+  const worstZone = getWorstZone(damage);
+
+  return {
+    ...state,
+    health: Math.max(0, 100 - Math.round(average(Object.values(damage)))),
+    worstZone,
+    zones: toZoneState(damage, new Set([healedZone])),
+  };
+}
+
 function mapDamage(damage: Record<BrainZone, number>) {
   return Object.fromEntries(
     Object.entries(damage).map(([zone, value]) => [zone, clamp(Math.round(value), 0, 100)]),

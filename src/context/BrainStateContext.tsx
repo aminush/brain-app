@@ -4,6 +4,7 @@ import {
   type BrainState,
   type Symptom,
   calculateCheckInState,
+  healBrainZone,
 } from '../lib/brainLogic';
 import type { HabitTrackId } from '../lib/habitTracks';
 import type { ScreenTimeResult } from '../lib/screenTimeAi';
@@ -26,6 +27,7 @@ type BrainProfile = {
 
 type BrainStateContextValue = {
   profile: BrainProfile | null;
+  healWorstZone: () => BrainState | null;
   saveInitialProfile: (input: CheckInInput) => BrainState;
   saveCheckIn: (input: CheckInInput) => BrainState;
   updateSteps: (steps: number) => BrainState | null;
@@ -39,6 +41,13 @@ export function BrainStateProvider({ children }: { children: React.ReactNode }) 
 
   const value = useMemo<BrainStateContextValue>(() => ({
     profile,
+    healWorstZone() {
+      if (!profile) return null;
+      const nextProfile = { ...profile, state: healBrainZone(profile.state) };
+      setProfile(nextProfile);
+      localStorage.setItem(storageKey, JSON.stringify(nextProfile));
+      return nextProfile.state;
+    },
     saveInitialProfile(input) {
       return saveProfile(input, setProfile);
     },

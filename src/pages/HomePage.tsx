@@ -7,6 +7,7 @@ import { Dashboard } from '../components/neuro/Dashboard';
 import { JournalModal } from '../components/neuro/JournalModal';
 import { OnboardingQuizScreen } from '../components/neuro/OnboardingQuizScreen';
 import { BrainStateProvider, useBrainState } from '../context/BrainStateContext';
+import { NeuroXpProvider } from '../context/NeuroXpContext';
 import type { CheckInInput } from '../context/BrainStateContext';
 import { createScreenshotCheckInInput } from '../lib/checkInInput';
 import type { Language } from '../lib/language';
@@ -17,7 +18,7 @@ import type { Tab } from '../components/neuro/types';
 import '../styles/neuro.css';
 
 export function HomePage() {
-  return <BrainStateProvider><HomeContent /></BrainStateProvider>;
+  return <BrainStateProvider><NeuroXpProvider><HomeContent /></NeuroXpProvider></BrainStateProvider>;
 }
 
 function HomeContent() {

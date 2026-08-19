@@ -27,6 +27,20 @@
   margin-left: 0;
 }
 
+.xp-badge {
+  display: grid;
+  min-width: 76px;
+  padding: 7px 10px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.16);
+  text-align: center;
+}
+
+.xp-badge strong { color: #7dd3fc; font-size: 12px; }
+.xp-badge span { color: #e0f2fe; font-size: 11px; }
+
 .logout-button {
   height: 42px;
   min-width: 82px;
@@ -52,6 +66,7 @@
 
   .top-actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }

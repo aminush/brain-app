@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
 import type { Language } from '../../lib/language';
 import { BreathTrainer } from './BreathTrainer';
-import { ReplaceScrollPanel } from './ReplaceScrollPanel';
 import { getMemoryCopy } from './trainingCopy';
 
 const colors = [
@@ -30,7 +29,6 @@ export function TrainingPanel({ language, zone }: Props) {
 
 function getZoneExercise(zone: BrainZone, language: Language) {
   if (zone === 'hippocampus') return <MemoryGrid language={language} />;
-  if (zone === 'limbic') return <ReplaceScrollPanel language={language} />;
   return <StroopTest language={language} />;
 }
 

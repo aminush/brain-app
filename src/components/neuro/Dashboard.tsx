@@ -1,4 +1,5 @@
 import { BrainCard } from './BrainCard';
+import { FillYourCupWidget } from './FillYourCupWidget';
 import { LanguageSwitch } from './LanguageSwitch';
 import { SciencePanel } from './SciencePanel';
 import { ScreenTimeInsight } from './ScreenTimeInsight';
@@ -11,6 +12,7 @@ import { text, type Language } from '../../lib/language';
 import type { ScreenTimeResult } from '../../lib/screenTimeAi';
 import type { TrackerEntry } from '../../lib/tracker';
 import type { Tab } from './types';
+import { useNeuroXp } from '../../context/NeuroXpContext';
 
 type Props = {
   activeTab: Tab;
@@ -50,6 +52,7 @@ export function Dashboard({
   onOpenJournal,
 }: Props) {
   const t = text[language];
+  const { userLevel, userXP } = useNeuroXp();
 
   return (
     <main className="neuro-shell dashboard">
@@ -59,6 +62,10 @@ export function Dashboard({
           <h1>{activeTab === 'home' ? t.homeTitle : tabTitle(activeTab, language)}</h1>
         </div>
         <div className="top-actions">
+          <div className="xp-badge" title="Neuro-XP">
+            <strong>LVL {userLevel}</strong>
+            <span>{userXP} XP</span>
+          </div>
           <LanguageSwitch language={language} onChangeLanguage={onChangeLanguage} />
           <button className="logout-button" onClick={onLogOut} type="button">
             {t.logout}
@@ -69,6 +76,7 @@ export function Dashboard({
       {activeTab === 'home' ? (
         <>
           <BrainCard focusMinutes={focusMinutes} health={health} language={language} state={brainState} />
+          <FillYourCupWidget />
           {screenInsight && <ScreenTimeInsight insight={screenInsight} language={language} />}
           <div className="secondary-actions">
             <label className="secondary-button">
