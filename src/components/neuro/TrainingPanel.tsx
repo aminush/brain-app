@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { BrainZone } from '../../lib/brainLogic';
 import type { Language } from '../../lib/language';
 import { BreathTrainer } from './BreathTrainer';
+import { FillYourCupWidget } from './FillYourCupWidget';
 import { getMemoryCopy } from './trainingCopy';
 
 const colors = [
@@ -21,6 +22,7 @@ export function TrainingPanel({ language, zone }: Props) {
 
   return (
     <div className="exercises-stack">
+      <FillYourCupWidget />
       <BreathTrainer language={language} />
       {zoneExercise}
     </div>

@@ -1,5 +1,4 @@
 import { BrainCard } from './BrainCard';
-import { FillYourCupWidget } from './FillYourCupWidget';
 import { LanguageSwitch } from './LanguageSwitch';
 import { SciencePanel } from './SciencePanel';
 import { ScreenTimeInsight } from './ScreenTimeInsight';
@@ -76,7 +75,6 @@ export function Dashboard({
       {activeTab === 'home' ? (
         <>
           <BrainCard focusMinutes={focusMinutes} health={health} language={language} state={brainState} />
-          <FillYourCupWidget />
           {screenInsight && <ScreenTimeInsight insight={screenInsight} language={language} />}
           <div className="secondary-actions">
             <label className="secondary-button">

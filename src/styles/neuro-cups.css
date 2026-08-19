@@ -1,6 +1,5 @@
 .fill-cup-widget {
   position: relative;
-  margin-top: 18px;
   padding: 24px;
   border: 1px solid rgba(56, 189, 248, 0.28);
   border-radius: 8px;
@@ -48,7 +47,7 @@
 
 .cup-front {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: 8px;
   padding: 10px;
   background: rgba(30, 41, 59, 0.78);
@@ -75,7 +74,6 @@
   min-height: 92px;
   background-repeat: no-repeat;
   background-size: 300% 200%;
-  mix-blend-mode: screen;
 }
 
 .sprite-0 { background-position: 0 0; }
@@ -85,7 +83,6 @@
 .sprite-4 { background-position: 50% 100%; }
 .sprite-5 { background-position: 100% 100%; }
 
-.cup-front > strong { min-height: 38px; font-size: 14px; line-height: 1.25; }
 .cup-lock { display: grid; gap: 6px; color: #cbd5e1; font-size: 11px; }
 .cup-lock i { height: 5px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.1); }
 .cup-lock b { display: block; height: 100%; border-radius: inherit; background: #38bdf8; }

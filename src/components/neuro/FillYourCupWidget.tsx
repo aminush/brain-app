@@ -102,7 +102,6 @@ function CupCard(props: CupCardProps) {
       <div className="cup-card-inner">
         <button className={`cup-card-face cup-front ${cup.id}`} disabled={isDimmed} onClick={onChoose} type="button">
           <span className={`cup-art sprite-${cup.sprite}`} style={{ backgroundImage: `url(${cupCollection})` }} />
-          <strong>{cup.name}</strong>
           {isLocked && (
             <span className="cup-lock">
               <span>🔒 Нужно {cup.unlockXP} XP</span>
